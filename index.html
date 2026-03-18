@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picker Studio Ultra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-base: #f1f5f9;
+            --bg-surface: #ffffff;
+            --bg-surface-hover: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --success: #10b981;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 40px -10px rgba(79, 70, 229, 0.4);
+            
+            --wheel-border: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-base: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-surface-hover: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary: #6366f1;
+            --primary-hover: #818cf8;
+            --danger: #f87171;
+            --danger-bg: #451a1a;
+            --success: #34d399;
+
+            --shadow-glow: 0 0 40px -10px rgba(99, 102, 241, 0.2);
+            --wheel-border: #1e293b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            z-index: 20;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.025em;
+        }
+        .brand span { color: var(--text-main); font-weight: 600; }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+        .icon-btn.active { color: var(--primary); border-color: var(--primary); }
+
+        /* --- LAYOUT --- */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 64px);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 400px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-base);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: var(--bg-surface);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1.25rem;
+            flex-direction: column;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .tab-content.active { display: flex; }
+
+        /* Inputs */
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            background: var(--bg-base);
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        
+        .btn-secondary {
+            background: var(--bg-surface-hover);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer; font-weight: 600; font-size: 0.85rem;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .btn-secondary:hover { border-color: var(--text-muted); }
+
+        .toolbar {
+            display: flex; gap: 8px; justify-content: space-between;
+            padding: 0 1.25rem 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* List Area */
+        .item-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 1.25rem;
+            background: var(--bg-base);
+        }
+
+        .item-card {
+            background: var(--bg-surface);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            animation: slideIn 0.2s ease-out;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .item-card:hover { border-color: var(--text-muted); }
+
+        .item-text {
+            font-size: 0.9rem; font-weight: 500;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+        .btn-delete {
+            background: transparent; border: none; color: var(--text-muted);
+            cursor: pointer; padding: 4px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .btn-delete:hover { background: var(--danger-bg); color: var(--danger); }
+
+        /* Footer / Leaderboard */
+        .sidebar-footer {
+            height: 260px;
+            border-top: 1px solid var(--border);
+            padding: 1rem 1.25rem;
+            background: var(--bg-surface);
+            display: flex; flex-direction: column;
+        }
+        
+        .section-header {
+            font-size: 0.75rem; text-transform: uppercase; font-weight: 700;
+            color: var(--text-muted); letter-spacing: 0.05em;
+            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .leaderboard-wrapper { flex: 1; overflow-y: auto; margin-bottom: 12px; }
+        .mini-leaderboard { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
+        .mini-leaderboard td { padding: 6px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+        .mini-leaderboard tr:last-child td { border-bottom: none; }
+        .win-count { font-weight: 700; color: var(--text-main); text-align: right;}
+
+        .data-actions { display: flex; gap: 8px; margin-top: auto; }
+        .btn-data { flex: 1; padding: 8px; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-base); color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 500;}
+        .btn-data:hover { background: var(--bg-surface-hover); }
+
+        /* --- MAIN STAGE --- */
+        .main-stage {
+            flex: 1;
+            position: relative;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 24px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .stage-controls {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            display: flex; gap: 12px; z-index: 10;
+            background: var(--bg-surface);
+            padding: 8px; border-radius: 12px;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+        }
+
+        .setting-group { display: flex; align-items: center; gap: 8px; }
+        .setting-group label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+
+        /* RIM & WHEEL */
+        .wheel-container {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .wheel-rim {
+            position: relative;
+            width: 560px; height: 560px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--primary), #ec4899);
+            padding: 10px;
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            transition: all 0.3s ease;
+        }
+
+        .wheel-rim-inner {
+            width: 100%; height: 100%;
+            background: var(--wheel-border); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #wheelCanvas {
+            width: 100%; height: 100%; border-radius: 50%;
+        }
+
+        /* POINTER */
+        .pointer-container {
+            position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%); z-index: 30;
+            width: 50px; height: 60px;
+        }
+        .pointer {
+            width: 100%; height: 100%;
+            background: var(--text-main);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            transform-origin: top center;
+            transition: transform 0.05s linear;
+        }
+        .pointer::after {
+            content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 15px;
+            background: rgba(255,255,255,0.2); clip-path: polygon(50% 100%, 0 0, 100% 0);
+        }
+
+        /* HUB */
+        .center-hub {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px; height: 100px; border-radius: 50%; z-index: 20;
+            background: var(--bg-surface);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255,255,255,0.5);
+            display: flex; align-items: center; justify-content: center;
+            padding: 6px;
+        }
+        .btn-spin {
+            width: 100%; height: 100%; border-radius: 50%; border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.05em;
+            cursor: pointer; transition: all 0.1s;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .btn-spin:active { transform: scale(0.95); }
+        .btn-spin:disabled { background: var(--text-muted); cursor: not-allowed; transform: none; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+            z-index: 1000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease-out;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-card {
+            background: var(--bg-surface); width: 440px; border-radius: 24px; padding: 2.5rem;
+            text-align: center; box-shadow: var(--shadow-lg);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative; border: 1px solid var(--border);
+        }
+        .modal-overlay.active .modal-card { transform: scale(1) translateY(0); }
+        
+        .modal-header { color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.1em; margin-bottom: 1rem;}
+        .winner-title { font-size: 2.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 2.5rem; line-height: 1.1; word-wrap: break-word;}
+        
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        
+        .btn-action {
+            padding: 1rem; border-radius: 12px; font-weight: 600; cursor: pointer;
+            border: 1px solid transparent; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .btn-action .material-icons-round { font-size: 24px; }
+        
+        .btn-action-count { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
+        .btn-action-count:hover { background: rgba(16, 185, 129, 0.2); }
+        
+        .btn-action-hide { background: var(--danger-bg); color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
+        .btn-action-hide:hover { background: rgba(239, 68, 68, 0.2); }
+        
+        .btn-action-close { background: var(--bg-base); color: var(--text-main); border-color: var(--border); width: 100%; flex-direction: row; justify-content: center;}
+        .btn-action-close:hover { background: var(--bg-surface-hover); }
+
+        /* Responsive */
+        @media (max-width: 960px) {
+            .app-container { flex-direction: column-reverse; height: auto; overflow: visible; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-top: 1px solid var(--border); }
+            .main-stage { height: 600px; padding: 20px; }
+            .wheel-rim { width: 380px; height: 380px; }
+            .center-hub { width: 80px; height: 80px; }
+            .btn-spin { font-size: 1rem; }
+            .stage-controls { top: 10px; right: 10px; padding: 6px; }
+        }
+        @media (max-width: 480px) {
+            .wheel-rim { width: 320px; height: 320px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand">
+        <span class="material-icons-round" style="color: inherit;">data_exploration</span>
+        Picker<span>Studio Ultra</span>
+    </div>
+    <div class="header-controls">
+        <button class="icon-btn" id="soundToggle" onclick="toggleSound()" title="Toggle Sound">
+            <span class="material-icons-round">volume_up</span>
+        </button>
+        <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+            <span class="material-icons-round">dark_mode</span>
+        </button>
+        <button class="icon-btn" onclick="toggleFullscreen()" title="Fullscreen">
+            <span class="material-icons-round">fullscreen</span>
+        </button>
+    </div>
+</header>
+
+<div class="app-container">
+    
+    <aside class="sidebar">
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('single')">Add Item</button>
+            <button class="tab-btn" onclick="switchTab('bulk')">Bulk Add</button>
+        </div>
+
+        <div id="tab-single" class="tab-content active">
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="newItemInput" placeholder="Type an item (e.g. Pizza)" onkeypress="handleKeyPress(event)">
+                <button class="btn-primary" onclick="addItemFromInput()">
+                    <span class="material-icons-round" style="font-size:18px">add</span> Add
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-bulk" class="tab-content">
+            <textarea id="bulkInput" placeholder="Paste multiple items here...&#10;Separate by commas or new lines."></textarea>
+            <button class="btn-primary" onclick="addBulkItems()">
+                <span class="material-icons-round" style="font-size:18px">playlist_add</span> Add All Items
+            </button>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn-secondary" onclick="shuffleItems()" title="Shuffle Wheel">
+                <span class="material-icons-round" style="font-size:16px">shuffle</span> Shuffle
+            </button>
+            <button class="btn-secondary" onclick="clearItems()" style="color:var(--danger); border-color:var(--danger-bg)">
+                <span class="material-icons-round" style="font-size:16px">delete_sweep</span> Clear
+            </button>
+        </div>
+
+        <div class="item-list-container" id="itemListContainer">
+            <!-- Items injected here -->
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="section-header">
+                Leaderboard
+                <button class="btn-secondary" style="padding:4px 8px; font-size:0.7rem; background:transparent; border:none; color:var(--primary)" onclick="resetCounts()">Reset Scores</button>
+            </div>
+            
+            <div class="leaderboard-wrapper">
+                <table class="mini-leaderboard">
+                    <tbody id="leaderboardBody"></tbody>
+                </table>
+            </div>
+
+            <div class="data-actions">
+                <button class="btn-data" onclick="exportData()">
+                    <span class="material-icons-round" style="font-size:16px;">download</span> Export
+                </button>
+                <button class="btn-data" onclick="triggerImport()">
+                    <span class="material-icons-round" style="font-size:16px;">upload</span> Import
+                </button>
+                <input type="file" id="importInput" style="display:none;" accept=".json" onchange="handleFileSelect(event)">
+            </div>
+        </div>
+
+    </aside>
+
+    <main class="main-stage" id="mainStage">
+        
+        <div class="stage-controls">
+            <div class="setting-group">
+                <label>Time</label>
+                <select id="durationInput" style="width: 70px; padding: 6px 10px;" onchange="saveData()">
+                    <option value="3">3s</option>
+                    <option value="5" selected>5s</option>
+                    <option value="10">10s</option>
+                    <option value="20">20s</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label>Colors</label>
+                <select id="paletteSelect" style="width: 110px; padding: 6px 10px;" onchange="changePalette()">
+                    <option value="classic">Classic</option>
+                    <option value="pastel">Pastel</option>
+                    <option value="neon">Neon</option>
+                    <option value="corporate">Corporate</option>
+                    <option value="monochrome">Mono</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="wheel-container">
+            <div class="wheel-rim">
+                <div class="wheel-rim-inner">
+                    <canvas id="wheelCanvas" width="1000" height="1000"></canvas>
+                </div>
+            </div>
+            <div class="pointer-container">
+                <div class="pointer" id="pointerEl"></div>
+            </div>
+            <div class="center-hub">
+                <button class="btn-spin" id="spinBtn" onclick="spinWheel()">SPIN</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- WINNER MODAL -->
+<div class="modal-overlay" id="resultModal">
+    <div class="modal-card">
+        <div class="modal-header">We Have A Winner</div>
+        <div class="winner-title" id="winnerText">Result</div>
+        
+        <div class="action-grid">
+            <button class="btn-action btn-action-count" onclick="handleAction('count')">
+                <span class="material-icons-round">add_reaction</span>
+                Keep & +1 Win
+            </button>
+            <button class="btn-action btn-action-hide" onclick="handleAction('hide')">
+                <span class="material-icons-round">visibility_off</span>
+                Hide Item
+            </button>
+        </div>
+        <button class="btn-action btn-action-close" onclick="handleAction('done')">
+            Close
+        </button>
+    </div>
+</div>
+
+<script>
+    // --- STATE & CONFIG ---
+    let items = [
+        { id: 1, text: "Movie Night", count: 0 },
+        { id: 2, text: "Game Night", count: 0 },
+        { id: 3, text: "Order Pizza", count: 0 },
+        { id: 4, text: "Cook Dinner", count: 0 },
+        { id: 5, text: "Go Out", count: 0 }
+    ];
+    let nextId = 6;
+    let soundEnabled = true;
+
+    const palettes = {
+        classic: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#3b82f6', '#6366f1', '#8b5cf6', '#ec4899'],
+        pastel: ['#fca5a5', '#fdba74', '#fcd34d', '#6ee7b7', '#93c5fd', '#a5b4fc', '#c4b5fd', '#f9a8d4'],
+        neon: ['#ff00ff', '#00ffff', '#00ff00', '#ffff00', '#ff3333', '#3333ff'],
+        corporate: ['#1e3a8a', '#1e40af', '#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
+        monochrome: ['#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8']
+    };
+    let currentPalette = 'classic';
+
+    // --- DOM ELEMENTS ---
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const durationInput = document.getElementById('durationInput');
+    const paletteSelect = document.getElementById('paletteSelect');
+    const modal = document.getElementById('resultModal');
+    const winnerText = document.getElementById('winnerText');
+    const leaderboardBody = document.getElementById('leaderboardBody');
+    const pointerEl = document.getElementById('pointerEl');
+    const itemListContainer = document.getElementById('itemListContainer');
+    const newItemInput = document.getElementById('newItemInput');
+    const bulkInput = document.getElementById('bulkInput');
+    const soundToggleBtn = document.getElementById('soundToggle');
+    const themeToggleBtn = document.getElementById('themeToggle');
+    
+    let audioCtx = null;
+
+    // --- WHEEL VARS ---
+    let startAngle = 0;
+    let isSpinning = false;
+    let spinTime = 0;
+    let spinTimeTotal = 0;
+    let maxSpeed = 0;
+    let accelerationTime = 0;
+    let lastSlice = -1;
+    let currentWinnerIndex = -1;
+
+    // --- INITIALIZATION ---
+    function init() {
+        loadData(); 
+        applyTheme();
+        updateSoundUI();
+        paletteSelect.value = currentPalette;
+        renderInputList();
+        renderLeaderboard();
+        drawWheel();
+    }
+
+    // --- LOCAL STORAGE ---
+    function loadData() {
+        const saved = localStorage.getItem('pickerStudioUltraData');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if(data.items) items = data.items;
+                if(data.nextId) nextId = data.nextId;
+                if(data.duration) durationInput.value = data.duration;
+                if(data.palette) currentPalette = data.palette;
+                if(data.soundEnabled !== undefined) soundEnabled = data.soundEnabled;
+                if(data.theme) document.documentElement.setAttribute('data-theme', data.theme);
+            } catch (e) { console.error("Data load error", e); }
+        }
+    }
+
+    function saveData() {
+        const data = {
+            items, nextId, 
+            duration: durationInput.value,
+            palette: currentPalette,
+            soundEnabled: soundEnabled,
+            theme: document.documentElement.getAttribute('data-theme')
+        };
+        localStorage.setItem('pickerStudioUltraData', JSON.stringify(data));
+    }
+
+    // --- UI INTERACTIONS ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        themeToggleBtn.innerHTML = next === 'dark' ? '<span class="material-icons-round">light_mode</span>' : '<span class="material-icons-round">dark_mode</span>';
+        saveData();
+    }
+
+    function applyTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        themeToggleBtn.innerHTML = current === 'dark' ? '<span class="material-icons-round">light_mode</span>' : '<span class="material-icons-round">dark_mode</span>';
+    }
+
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        updateSoundUI();
+        saveData();
+    }
+
+    function updateSoundUI() {
+        soundToggleBtn.innerHTML = soundEnabled ? '<span class="material-icons-round">volume_up</span>' : '<span class="material-icons-round">volume_off</span>';
+        if(!soundEnabled) soundToggleBtn.classList.remove('active');
+        else soundToggleBtn.classList.add('active');
+    }
+
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => console.log(err));
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    function changePalette() {
+        currentPalette = paletteSelect.value;
+        saveData();
+        drawWheel();
+    }
+
+    // --- LIST MANAGEMENT ---
+    function addItemFromInput() {
+        const text = newItemInput.value.trim();
+        if(!text) return;
+        items.push({ id: nextId++, text: text, count: 0 });
+        newItemInput.value = "";
+        refreshAll();
+    }
+
+    function handleKeyPress(e) { if(e.key === 'Enter') addItemFromInput(); }
+
+    function addBulkItems() {
+        const text = bulkInput.value.trim();
+        if(!text) return;
+        const newItems = text.split(/[\n,]+/).map(i => i.trim()).filter(i => i !== "");
+        newItems.forEach(itemText => {
+            items.push({ id: nextId++, text: itemText, count: 0 });
+        });
+        bulkInput.value = "";
+        switchTab('single'); // go back to main tab
+        refreshAll();
+    }
+
+    function deleteItem(id) {
+        items = items.filter(item => item.id !== id);
+        refreshAll();
+    }
+
+    function clearItems() {
+        if(confirm("Clear all items from the list?")) {
+            items = [];
+            refreshAll();
+        }
+    }
+
+    function shuffleItems() {
+        for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]];
+        }
+        refreshAll();
+    }
+
+    function resetCounts() {
+        items.forEach(i => i.count = 0);
+        refreshAll();
+    }
+
+    function refreshAll() {
+        saveData();
+        renderInputList();
+        renderLeaderboard();
+        drawWheel();
+    }
+
+    // --- RENDERING ---
+    function renderInputList() {
+        itemListContainer.innerHTML = '';
+        const colors = palettes[currentPalette];
+        items.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.innerHTML = `
+                <div class="item-text">
+                    <span class="color-dot" style="background:${colors[index % colors.length]}"></span>
+                    ${item.text}
+                </div>
+                <button class="btn-delete" onclick="deleteItem(${item.id})" title="Remove">
+                    <span class="material-icons-round" style="font-size:18px">close</span>
+                </button>
+            `;
+            itemListContainer.appendChild(card);
+        });
+    }
+
+    function renderLeaderboard() {
+        leaderboardBody.innerHTML = '';
+        const sorted = [...items].sort((a, b) => b.count - a.count);
+        sorted.forEach(item => {
+            if(item.count > 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${item.text}</td><td class="win-count">${item.count}</td>`;
+                leaderboardBody.appendChild(tr);
+            }
+        });
+        if(leaderboardBody.innerHTML === '') {
+            leaderboardBody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 20px 0; font-size:0.8rem;">No wins yet. Spin the wheel!</td></tr>';
+        }
+    }
+
+    function drawWheel() {
+        const len = items.length;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (len === 0) {
+            ctx.font = '600 40px Inter';
+            ctx.fillStyle = 'var(--text-muted)';
+            ctx.textAlign = 'center';
+            ctx.fillText('Add items to spin', canvas.width/2, canvas.height/2);
+            return;
+        }
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = centerY - 10;
+        const textRadius = radius * 0.7;
+        const arc = Math.PI * 2 / len;
+        const colors = palettes[currentPalette];
+
+        ctx.font = 'bold 36px Inter, sans-serif';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        for(let i = 0; i < len; i++) {
+            const angle = startAngle + i * arc;
+            
+            // Slice Fill
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, angle, angle + arc, false);
+            ctx.lineTo(centerX, centerY);
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.fill();
+
+            // Slice Stroke (Inner border for crisp look)
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+            ctx.stroke();
+
+            // Text
+            ctx.save();
+            ctx.translate(centerX + Math.cos(angle + arc / 2) * textRadius, 
+                          centerY + Math.sin(angle + arc / 2) * textRadius);
+            ctx.rotate(angle + arc / 2 + Math.PI); // Rotate text to be readable towards outer edge
+            
+            const text = items[i].text;
+            let displayText = text;
+            if (ctx.measureText(text).width > radius * 0.6) {
+                 displayText = text.substring(0, 16) + '...';
+            }
+
+            ctx.fillStyle = "#ffffff";
+            ctx.shadowColor = "rgba(0,0,0,0.5)";
+            ctx.shadowBlur = 6;
+            ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+            ctx.fillText(displayText, 0, 0);
+            ctx.restore();
+        }
+
+        // Inner shadow effect on the whole wheel
+        const gradient = ctx.createRadialGradient(centerX, centerY, radius - 20, centerX, centerY, radius);
+        gradient.addColorStop(0, "rgba(0,0,0,0)");
+        gradient.addColorStop(1, "rgba(0,0,0,0.15)");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // --- AUDIO ---
+    function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTick() {
+        if (!soundEnabled || !audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function playWin() {
+        if (!soundEnabled || !audioCtx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+        const now = audioCtx.currentTime;
+        notes.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            const t = now + (i * 0.1);
+            gain.gain.setValueAtTime(0, t);
+            gain.gain.linearRampToValueAtTime(0.1, t + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+            osc.start(t);
+            osc.stop(t + 0.6);
+        });
+    }
+
+    // --- SPIN LOGIC ---
+    function spinWheel() {
+        if(items.length === 0) { alert("Add some items first!"); return; }
+        initAudio();
+        isSpinning = true;
+        spinBtn.disabled = true;
+        
+        let val = parseInt(durationInput.value);
+        if(!val || val <= 0) val = 5; 
+        spinTimeTotal = val * 1000;
+
+        spinTime = 0;
+        accelerationTime = spinTimeTotal * 0.15; // Fast acceleration
+        maxSpeed = Math.random() * 10 + 25; // Randomize max speed slightly
+        
+        // Offset so we don't always land predictably
+        startAngle += Math.random() * Math.PI; 
+        lastSlice = -1;
+        
+        requestAnimationFrame(rotateWheel);
+    }
+
+    function rotateWheel() {
+        spinTime += 20; // assumed ~60fps step
+        if(spinTime >= spinTimeTotal) { stopWheel(); return; }
+        
+        let speed = 0;
+        // Easing curve
+        if (spinTime < accelerationTime) {
+            const t = spinTime / accelerationTime;
+            speed = maxSpeed * (t * t);
+        } else {
+            const t = (spinTime - accelerationTime) / (spinTimeTotal - accelerationTime);
+            const tInv = 1 - t;
+            // Ease out cubic
+            speed = maxSpeed * (tInv * tInv * tInv);
+        }
+        
+        startAngle += (speed * Math.PI / 180);
+        drawWheel();
+        
+        // Pointer Tick Logic
+        // Calculate which slice is currently at the top (270 degrees / -PI/2)
+        const arc = Math.PI * 2 / items.length;
+        // Adjusted angle considering wheel rotation
+        let normalizedAngle = startAngle % (Math.PI * 2);
+        if (normalizedAngle < 0) normalizedAngle += Math.PI * 2;
+        
+        // The pointer is at 270 degrees (or -90 deg). We find the angle relative to top.
+        const pointerAngleRad = Math.PI * 1.5; 
+        let offsetAngle = pointerAngleRad - normalizedAngle;
+        if (offsetAngle < 0) offsetAngle += Math.PI * 2;
+        
+        const currentSlice = Math.floor(offsetAngle / arc);
+
+        if (lastSlice !== currentSlice) {
+            if (speed > 0.5) {
+                playTick();
+                // Visual pointer flick
+                pointerEl.style.transform = `rotate(${20 + Math.random()*15}deg)`;
+                setTimeout(() => { if(isSpinning) pointerEl.style.transform = `rotate(0deg)`; }, 50);
+            }
+            lastSlice = currentSlice;
+        }
+
+        requestAnimationFrame(rotateWheel);
+    }
+
+    function stopWheel() {
+        isSpinning = false;
+        spinBtn.disabled = false;
+        pointerEl.style.transform = `rotate(0deg)`;
+
+        // Final slice calculation
+        const arc = Math.PI * 2 / items.length;
+        let normalizedAngle = startAngle % (Math.PI * 2);
+        if (normalizedAngle < 0) normalizedAngle += Math.PI * 2;
+        let offsetAngle = Math.PI * 1.5 - normalizedAngle;
+        if (offsetAngle < 0) offsetAngle += Math.PI * 2;
+        
+        currentWinnerIndex = Math.floor(offsetAngle / arc);
+        const winner = items[currentWinnerIndex];
+        
+        playWin();
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, zIndex: 1100 });
+        }
+        
+        winnerText.innerText = winner.text;
+        modal.classList.add('active');
+    }
+
+    // --- MODAL ACTIONS ---
+    function handleAction(action) {
+        if(currentWinnerIndex === -1 || !items[currentWinnerIndex]) {
+            modal.classList.remove('active');
+            return;
+        }
+        const winnerItem = items[currentWinnerIndex];
+
+        if (action === 'count') {
+            winnerItem.count++;
+            refreshAll();
+        } else if (action === 'hide') {
+            items = items.filter(i => i.id !== winnerItem.id);
+            refreshAll();
+        }
+        
+        modal.classList.remove('active');
+    }
+
+    // --- IMPORT / EXPORT ---
+    function exportData() {
+        const data = { items, nextId, duration: durationInput.value, palette: currentPalette, exportedAt: new Date().toISOString() };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr; a.download = "picker_studio_ultra.json";
+        document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    function triggerImport() { importInput.click(); }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (Array.isArray(data.items)) {
+                    if(confirm("This will overwrite your current list. Continue?")) {
+                        items = data.items;
+                        nextId = data.nextId || (items.length + 1);
+                        if(data.duration) durationInput.value = data.duration;
+                        if(data.palette) currentPalette = data.palette;
+                        refreshAll();
+                        alert("Data loaded successfully!");
+                    }
+                } else alert("Invalid file format.");
+            } catch (err) { alert("Error reading file."); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // Start App
+    init();
+
+</script>
+</body>
+</html>
