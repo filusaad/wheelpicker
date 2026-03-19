@@ -280,13 +280,13 @@
             background-image: radial-gradient(var(--border) 1px, transparent 1px);
             background-size: 24px 24px;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
             overflow: hidden;
         }
 
         .stage-controls {
-            position: absolute; top: 1.5rem; right: 1.5rem;
+            align-self: flex-end;
+            margin: 1.5rem 1.5rem 0 0;
             display: flex; gap: 12px; z-index: 10;
             background: var(--bg-surface);
             padding: 8px; border-radius: 12px;
@@ -298,6 +298,7 @@
 
         /* RIM & WHEEL */
         .wheel-container {
+            margin: auto;
             position: relative;
             display: flex; align-items: center; justify-content: center;
         }
@@ -408,11 +409,11 @@
         @media (max-width: 960px) {
             .app-container { flex-direction: column-reverse; height: auto; overflow: visible; }
             .sidebar { width: 100%; height: auto; border-right: none; border-top: 1px solid var(--border); }
-            .main-stage { height: 600px; padding: 20px; }
+            .main-stage { height: 650px; padding: 20px; }
             .wheel-rim { width: 380px; height: 380px; }
             .center-hub { width: 80px; height: 80px; }
             .btn-spin { font-size: 1rem; }
-            .stage-controls { top: 10px; right: 10px; padding: 6px; }
+            .stage-controls { align-self: center; margin: 0 0 20px 0; padding: 6px; flex-wrap: wrap; justify-content: center; }
         }
         @media (max-width: 480px) {
             .wheel-rim { width: 320px; height: 320px; }
@@ -468,8 +469,9 @@
             <button class="btn-secondary" onclick="shuffleItems()" title="Shuffle Wheel">
                 <span class="material-icons-round" style="font-size:16px">shuffle</span> Shuffle
             </button>
-            <button class="btn-secondary" onclick="clearItems()" style="color:var(--danger); border-color:var(--danger-bg)">
-                <span class="material-icons-round" style="font-size:16px">delete_sweep</span> Clear
+            <button id="clearBtn" class="btn-secondary" onclick="clearItems()" style="color:var(--danger); border-color:var(--danger-bg)">
+                <span class="material-icons-round" id="clearBtnIcon" style="font-size:16px">delete_sweep</span> 
+                <span id="clearBtnText">Clear</span>
             </button>
         </div>
 
@@ -513,6 +515,10 @@
                     <option value="10">10s</option>
                     <option value="20">20s</option>
                 </select>
+            </div>
+            <div class="setting-group">
+                <label title="First to X Wins">Target Score</label>
+                <input type="number" id="targetScoreInput" min="1" max="99" value="1" style="width: 60px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-base); color: var(--text-main); font-size: 0.85rem; text-align: center;" onchange="saveData()">
             </div>
             <div class="setting-group">
                 <label>Colors</label>
@@ -591,6 +597,7 @@
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
     const durationInput = document.getElementById('durationInput');
+    const targetScoreInput = document.getElementById('targetScoreInput');
     const paletteSelect = document.getElementById('paletteSelect');
     const modal = document.getElementById('resultModal');
     const winnerText = document.getElementById('winnerText');
@@ -607,6 +614,8 @@
     // --- WHEEL VARS ---
     let startAngle = 0;
     let isSpinning = false;
+    let isAutoSpinning = false;
+    let autoSpinTimeout = null;
     let spinTime = 0;
     let spinTimeTotal = 0;
     let maxSpeed = 0;
@@ -634,6 +643,7 @@
                 if(data.items) items = data.items;
                 if(data.nextId) nextId = data.nextId;
                 if(data.duration) durationInput.value = data.duration;
+                if(data.targetScore) targetScoreInput.value = data.targetScore;
                 if(data.palette) currentPalette = data.palette;
                 if(data.soundEnabled !== undefined) soundEnabled = data.soundEnabled;
                 if(data.theme) document.documentElement.setAttribute('data-theme', data.theme);
@@ -645,6 +655,7 @@
         const data = {
             items, nextId, 
             duration: durationInput.value,
+            targetScore: targetScoreInput.value,
             palette: currentPalette,
             soundEnabled: soundEnabled,
             theme: document.documentElement.getAttribute('data-theme')
@@ -728,9 +739,23 @@
     }
 
     function clearItems() {
-        if(confirm("Clear all items from the list?")) {
-            items = [];
+        if (items.length === 0) {
+            // Load preset if already empty
+            items = [
+                { id: 1, text: "Movie Night", count: 0 },
+                { id: 2, text: "Game Night", count: 0 },
+                { id: 3, text: "Order Pizza", count: 0 },
+                { id: 4, text: "Cook Dinner", count: 0 },
+                { id: 5, text: "Go Out", count: 0 }
+            ];
+            nextId = 6;
             refreshAll();
+        } else {
+            // Otherwise, normal clear
+            if(confirm("Clear all items from the list?")) {
+                items = [];
+                refreshAll();
+            }
         }
     }
 
@@ -757,6 +782,24 @@
     // --- RENDERING ---
     function renderInputList() {
         itemListContainer.innerHTML = '';
+        
+        // Dynamically update the Clear button state based on if the wheel is empty
+        const clearBtn = document.getElementById('clearBtn');
+        const clearBtnIcon = document.getElementById('clearBtnIcon');
+        const clearBtnText = document.getElementById('clearBtnText');
+        
+        if (items.length === 0) {
+            clearBtn.style.color = 'var(--primary)';
+            clearBtn.style.borderColor = 'var(--border)';
+            clearBtnIcon.innerText = 'restart_alt';
+            clearBtnText.innerText = 'Load Preset';
+        } else {
+            clearBtn.style.color = 'var(--danger)';
+            clearBtn.style.borderColor = 'var(--danger-bg)';
+            clearBtnIcon.innerText = 'delete_sweep';
+            clearBtnText.innerText = 'Clear';
+        }
+
         const colors = palettes[currentPalette];
         items.forEach((item, index) => {
             const card = document.createElement('div');
@@ -901,9 +944,35 @@
     // --- SPIN LOGIC ---
     function spinWheel() {
         if(items.length === 0) { alert("Add some items first!"); return; }
+        if (isSpinning) return;
+        
+        const target = parseInt(targetScoreInput.value) || 1;
+
+        if (target > 1) {
+            isAutoSpinning = true;
+            spinBtn.innerText = "STOP";
+            spinBtn.style.background = "var(--danger)";
+            spinBtn.onclick = cancelAutoSpin;
+        } else {
+            spinBtn.disabled = true;
+        }
+        
+        executeSpin();
+    }
+
+    function cancelAutoSpin() {
+        isAutoSpinning = false;
+        spinBtn.innerText = "SPIN";
+        spinBtn.style.background = "";
+        spinBtn.onclick = spinWheel;
+        if(!isSpinning) spinBtn.disabled = false;
+        if(autoSpinTimeout) clearTimeout(autoSpinTimeout);
+    }
+
+    function executeSpin() {
         initAudio();
         isSpinning = true;
-        spinBtn.disabled = true;
+        if (!isAutoSpinning) spinBtn.disabled = true;
         
         let val = parseInt(durationInput.value);
         if(!val || val <= 0) val = 5; 
@@ -968,7 +1037,7 @@
 
     function stopWheel() {
         isSpinning = false;
-        spinBtn.disabled = false;
+        if (!isAutoSpinning) spinBtn.disabled = false;
         pointerEl.style.transform = `rotate(0deg)`;
 
         // Final slice calculation
@@ -982,12 +1051,42 @@
         const winner = items[currentWinnerIndex];
         
         playWin();
-        if (typeof confetti === 'function') {
-            confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, zIndex: 1100 });
-        }
         
-        winnerText.innerText = winner.text;
-        modal.classList.add('active');
+        const target = parseInt(targetScoreInput.value) || 1;
+        const countBtn = document.querySelector('.btn-action-count');
+
+        if (isAutoSpinning && target > 1) {
+            winner.count++;
+            refreshAll(); // Update leaderboard immediately
+            
+            if (winner.count >= target) {
+                // Goal reached!
+                isAutoSpinning = false;
+                cancelAutoSpin();
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, zIndex: 1100 });
+                }
+                winnerText.innerHTML = `<div style="font-size: 0.45em; color: var(--primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px;">First to ${target} Wins</div>${winner.text}`;
+                countBtn.style.display = 'none'; // Hide manual +1 button since it was auto-added
+                modal.classList.add('active');
+            } else {
+                // Next round starts automatically
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 40, spread: 50, origin: { y: 0.6 }, zIndex: 1100 });
+                }
+                autoSpinTimeout = setTimeout(() => {
+                    if (isAutoSpinning) executeSpin();
+                }, 1500); // 1.5 second pause between spins
+            }
+        } else {
+            // Normal mode
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, zIndex: 1100 });
+            }
+            winnerText.innerText = winner.text;
+            countBtn.style.display = 'flex';
+            modal.classList.add('active');
+        }
     }
 
     // --- MODAL ACTIONS ---
@@ -1011,7 +1110,7 @@
 
     // --- IMPORT / EXPORT ---
     function exportData() {
-        const data = { items, nextId, duration: durationInput.value, palette: currentPalette, exportedAt: new Date().toISOString() };
+        const data = { items, nextId, duration: durationInput.value, targetScore: targetScoreInput.value, palette: currentPalette, exportedAt: new Date().toISOString() };
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
         const a = document.createElement('a');
         a.href = dataStr; a.download = "picker_studio_ultra.json";
@@ -1032,6 +1131,7 @@
                         items = data.items;
                         nextId = data.nextId || (items.length + 1);
                         if(data.duration) durationInput.value = data.duration;
+                        if(data.targetScore) targetScoreInput.value = data.targetScore;
                         if(data.palette) currentPalette = data.palette;
                         refreshAll();
                         alert("Data loaded successfully!");
