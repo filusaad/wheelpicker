@@ -25,6 +25,10 @@ instead of HTML entities, allowing names to break rendered input attributes.
   **Start race**, and spins repeat until the first entry reaches 7 points.
   **Pause race** cancels the current spin and pending continuation; **Reset**
   clears scores. Starting a new race after a target is reached clears scores.
+- Live scores remain beside the wheel and update after every spin, with large
+  point totals, progress bars, and a highlight for the latest winner. On narrow
+  screens the score cards sit above the wheel. A separate leaderboard tab is no
+  longer needed.
 - Editing, workspace switches, imports, and score resets are locked while a spin
   or race is in progress, keeping the result consistent with the visible wheel.
 - Paused races cancel their pending timer, preventing stale delayed spins.
