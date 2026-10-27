@@ -1413,6 +1413,8 @@ Item 3 * 5"></textarea>
     let returnFocus = null;
     let storageProtected = false;
     const undoStack = [];
+    const bulkDrafts = new Map();
+    let bulkWorkspaceId = null;
     const makeId = () => window.crypto.randomUUID ? window.crypto.randomUUID() : 'id_' + Date.now() + '_' + cryptoRandom().toString(36).slice(2);
     const clamp = (value, min, max, fallback) => Number.isFinite(Number(value)) ? Math.min(max, Math.max(min, Number(value))) : fallback;
     const safeColor = value => /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(value) ? value : '#82b5a2';
@@ -2275,8 +2277,24 @@ Item 3 * 5"></textarea>
       bar.appendChild(addBtn);
     }
 
+    function bulkLine(item, ws = getActiveWs()) {
+      let line = item.name;
+      if (ws.weighted && item.weight > 1) line += ` * ${item.weight}`;
+      if (item.mystery) line += ' ?';
+      return line;
+    }
+
     function renderEntriesList() {
       const ws = getActiveWs();
+      const editor = document.getElementById('bulkEditor');
+      const textarea = document.getElementById('bulkTextarea');
+      if (editor.classList.contains('active') && bulkWorkspaceId !== ws.id) {
+        if (bulkWorkspaceId) bulkDrafts.set(bulkWorkspaceId, textarea.value);
+        editor.classList.remove('active');
+        document.getElementById('bulkToggleBtn').classList.remove('active');
+        document.getElementById('itemsList').style.display = 'flex';
+        bulkWorkspaceId = null;
+      }
       const palette = PALETTES[ws.palette] || PALETTES.cyber;
       const totalWeight = getActiveItems().reduce((s, i) => s + getItemWeight(i), 0);
       const container = document.getElementById('itemsList');
@@ -2313,13 +2331,8 @@ Item 3 * 5"></textarea>
       });
 
       // Sync Bulk Textarea
-      const bulkText = ws.items.map(i => {
-        let line = i.name;
-        if (i.weight > 1) line += ` * ${i.weight}`;
-        if (i.mystery) line += ` ?`;
-        return line;
-      }).join('\n');
-      if (!document.getElementById('bulkEditor').classList.contains('active')) document.getElementById('bulkTextarea').value = bulkText;
+      const bulkText = ws.items.map(item => bulkLine(item,ws)).join('\n');
+      if (!editor.classList.contains('active')) textarea.value = bulkDrafts.get(ws.id) ?? bulkText;
     }
 
     function renderLeaderboard() {
@@ -2598,10 +2611,17 @@ Item 3 * 5"></textarea>
       const editor = document.getElementById('bulkEditor');
       const list = document.getElementById('itemsList');
       const isOpening = !editor.classList.contains('active');
-      if (isOpening) { renderEntriesList(); document.getElementById('bulkTextarea').focus(); }
+      if (isOpening) {
+        renderEntriesList();
+        bulkWorkspaceId = getActiveWs().id;
+      } else {
+        bulkDrafts.set(getActiveWs().id,document.getElementById('bulkTextarea').value);
+        bulkWorkspaceId = null;
+      }
       editor.classList.toggle('active', isOpening);
       list.style.display = isOpening ? 'none' : 'flex';
       e.target.classList.toggle('active', isOpening);
+      if (isOpening) document.getElementById('bulkTextarea').focus();
     });
 
     document.getElementById('applyBulkBtn').addEventListener('click', () => {
@@ -2611,17 +2631,38 @@ Item 3 * 5"></textarea>
       if (lines.length > 1000) { notify('A wheel supports up to 1,000 entries. Your list has not been changed.'); return; }
       const ws = getActiveWs();
       const oldByName = new Map();
-      ws.items.forEach(item => {if (!oldByName.has(item.name)) oldByName.set(item.name,[]); oldByName.get(item.name).push(item);});
+      const oldByLine = new Map();
+      const reused = new Set();
+      ws.items.forEach(item => {
+        for (const [map,key] of [[oldByName,item.name],[oldByLine,bulkLine(item,ws)]]) {
+          if (!map.has(key)) map.set(key,[]);
+          map.get(key).push(item);
+        }
+      });
+      function reuse(map,key) {
+        const bucket = map.get(key);
+        while (bucket?.length) {
+          const item = bucket.shift();
+          if (!reused.has(item.id)) { reused.add(item.id); return item; }
+        }
+      }
+      let explicitWeights = false;
       ws.items = lines.map(line => {
         let text = line.trim(), mystery = false, weight = 1;
+        const unchanged = reuse(oldByLine,text);
+        if (unchanged) return {...unchanged};
         if (text.endsWith(' ?')) { mystery=true; text=text.slice(0,-2).trim(); }
         const match = text.match(/^(.*)\s+\*\s*(\d+)$/);
-        if (match) {text=match[1].trim(); weight=Math.round(clamp(match[2],1,99,1));}
-        const existing = oldByName.get(text)?.shift();
+        if (match) {text=match[1].trim(); weight=Math.round(clamp(match[2],1,99,1)); if (weight > 1) explicitWeights = true;}
+        const existing = reuse(oldByName,text);
         return {...(existing || {id:makeId(),wins:0,active:true,revealed:false}),name:text.slice(0,300),weight,mystery};
       }).filter(item => item.name);
-      if (ws.items.some(item => item.weight > 1)) ws.weighted = true;
-      document.getElementById('bulkToggleBtn').click();
+      if (explicitWeights) ws.weighted = true;
+      bulkDrafts.delete(ws.id);
+      bulkWorkspaceId = null;
+      document.getElementById('bulkEditor').classList.remove('active');
+      document.getElementById('bulkToggleBtn').classList.remove('active');
+      document.getElementById('itemsList').style.display = 'flex';
       lastWonItemId = null; resetCallout(); saveState(); renderAll();
       notify('Choices updated.');
     });
@@ -2985,7 +3026,6 @@ Item 3 * 5"></textarea>
       const names={food:'What’s for dinner?',weekend:'Weekend plans',focus:'A productive break',yesno:'Yes or no?',blank:'Untitled wheel'};
       const ws=normalizeWorkspace({name:names[e.target.value],items:templates[e.target.value]});
       state.workspaces.push(ws);state.activeWorkspaceId=ws.id;lastWonItemId=null;currentAngle=0;
-      document.getElementById('bulkEditor').classList.remove('active');document.getElementById('itemsList').style.display='flex';
       resetCallout();saveState();renderAll();notify('New wheel ready. Make it yours.');
     });
     document.getElementById('winnerModal').addEventListener('click',e=>{if(e.target.id==='winnerModal')closeWinnerModal();});
