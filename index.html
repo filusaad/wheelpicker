@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Picker Studio Pro — Decision Wheel & Mystery Engine</title>
+  <title>Picker Studio — A little spin. A clear decision.</title>
+  <meta name="description" content="Your personal decision wheel. Add weighted choices, reveal mystery picks, and race to a winner. Free, private, and saved on your device." />
+  <meta name="theme-color" content="#101212" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23c3f279'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23101212' stroke-width='5'/%3E%3Cpath d='M32 12v20l17 10M32 32L15 43' fill='none' stroke='%23101212' stroke-width='4'/%3E%3C/svg%3E" />
   <style>
     :root {
       --bg-base: #070a10;
@@ -930,6 +933,130 @@
       from { transform: translateY(0) scale(1); }
       to { transform: translateY(-6px) scale(1.06); }
     }
+
+    :root {
+      color-scheme: dark;
+      --bg-base:#101212; --bg-surface:#191c1b; --bg-elevated:#222624; --bg-card:#2b302d;
+      --bg-glass:rgba(16,18,18,.96); --border:rgba(228,238,229,.09); --border-strong:rgba(228,238,229,.18);
+      --text-main:#f1f3eb; --text-muted:#a3aca3; --text-dim:#88948b;
+      --accent:#c3f279; --accent-hover:#a8dc5e; --accent-glow:rgba(195,242,121,.1); --border-focus:#c3f279;
+      --mystery:#d4acf1; --mystery-glow:rgba(212,172,241,.09); --shadow-lg:0 12px 30px rgba(0,0,0,.12);
+      --radius-xl:20px;
+    }
+    [data-theme="light"] {
+      color-scheme:light; --bg-base:#f3f4ed; --bg-surface:#fffef9; --bg-elevated:#eeefe7; --bg-card:#e7e9df;
+      --bg-glass:rgba(243,244,237,.97); --text-main:#202820; --text-muted:#586456; --text-dim:#63705f;
+      --accent:#416324; --accent-hover:#344f1d; --accent-glow:rgba(65,99,36,.1); --border-focus:#416324;
+      --border:rgba(35,52,29,.12); --border-strong:rgba(35,52,29,.22); --shadow-lg:0 10px 28px rgba(35,52,29,.04);
+    }
+    body {background-image:none; line-height:1.5}
+    button,input,textarea,select {font:inherit}
+    button,select {touch-action:manipulation}
+    button:disabled {opacity:.42; cursor:not-allowed; transform:none!important}
+    :focus-visible {outline:2px solid var(--accent); outline-offset:4px}
+    header {padding:18px 3.2%; background:var(--bg-base); backdrop-filter:none; position:relative; gap:18px}
+    .brand-logo {background:var(--accent); color:var(--bg-base); box-shadow:none; font-size:30px; font-weight:500; border-radius:12px; width:40px; height:40px}
+    .brand-title {font-size:18px; letter-spacing:-.7px}
+    .brand-badge {display:block; font-size:8px; letter-spacing:2.3px; border:0; background:none; padding:0; margin:0; color:var(--text-muted)}
+    .workspace-bar {flex:1; margin-left:32px; gap:6px}
+    .ws-tab {background:none; border-color:transparent; font-weight:500; max-width:190px; overflow:hidden; text-overflow:ellipsis}
+    .ws-tab.active {background:var(--bg-elevated); border-color:var(--border-strong); color:var(--text-main); box-shadow:none}
+    .ws-add-btn {border:0; font-size:12px}
+    .header-actions {gap:6px}
+    .icon-btn {background:transparent; font-size:12px; padding:8px 11px; font-weight:500}
+    .page-intro {width:100%; max-width:1460px; margin:36px auto 25px; padding:0 3.2%; display:flex; align-items:flex-end; justify-content:space-between; gap:24px}
+    .eyebrow {color:var(--accent); font-size:10px; letter-spacing:2.1px; font-weight:700; margin-bottom:10px}
+    h1 {font-size:clamp(28px,3.2vw,44px); font-weight:650; letter-spacing:-1.8px; line-height:1.2}
+    h1 span {color:var(--accent)}
+    .page-intro p {color:var(--text-muted); font-size:14px; margin-top:9px}
+    .save-status {color:var(--text-muted); font-size:11px; white-space:nowrap; padding-bottom:4px}
+    .save-status::first-letter {color:var(--accent)}
+    main {grid-template-columns:minmax(0,1fr) 470px; gap:22px; padding:0 3.2% 32px; align-items:stretch}
+    .wheel-stage {min-width:0; min-height:690px; padding:22px 24px 25px; justify-content:flex-start; background-image:radial-gradient(circle at 50% 46%,rgba(195,242,121,.045),transparent 60%)}
+    .stage-top-bar {flex-wrap:nowrap; gap:8px}
+    .stage-top-bar .stage-pills {gap:7px}
+    .status-pill {font-size:10px; padding:5px 9px; font-weight:500; border:0; background:var(--bg-elevated)}
+    .status-dot {width:5px; height:5px; background:var(--accent); box-shadow:none}
+    #stageSoundProfileBtn,#stageAutoRemoveBtn {font-size:10px; padding:5px 7px; border-color:transparent}
+    .wheel-heading {text-align:center; margin-top:26px}
+    .wheel-heading h2 {font-size:21px; letter-spacing:-.6px; font-weight:600; overflow-wrap:anywhere}
+    .wheel-heading>span {font-size:8px; letter-spacing:1.8px; color:var(--text-muted)}
+    .canvas-container {width:min(100%,440px); height:auto; aspect-ratio:1; flex-shrink:0; margin:11px auto 7px}
+    canvas#wheelCanvas {filter:drop-shadow(0 12px 20px rgba(0,0,0,.2))}
+    .hub-btn {width:76px; height:76px; background:#f1f3e8; border:6px solid #252c27; color:#252c27; box-shadow:0 4px 14px rgba(0,0,0,.3); font-size:12px; letter-spacing:1px}
+    .hub-btn small {font-size:8px}
+    .live-callout {background:none; box-shadow:none; border-color:transparent; border-radius:10px; font-size:12px; min-width:0; max-width:100%; overflow-wrap:anywhere; padding:5px 12px; min-height:34px; flex-wrap:wrap}
+    .spin-controls-row {margin-top:14px; gap:8px}
+    .primary-btn {background:var(--accent); color:var(--bg-base); box-shadow:none; justify-content:center; font-weight:650; border-radius:9px}
+    #mainSpinBtn {min-width:190px; font-size:14px; padding:12px 24px}
+    #autoRaceBtn {padding:11px 17px; font-size:12px}
+    .control-panel {height:690px; min-width:0; box-shadow:none}
+    .panel-tabs {background:transparent; padding:0 15px; gap:6px}
+    .panel-tab {font-size:12px; padding:17px 0 14px; font-weight:500; border-bottom-width:2px}
+    .panel-tab.active {background:none}
+    .tab-pane {padding:22px; gap:16px; min-height:0}
+    .editor-heading {display:flex; align-items:center; justify-content:space-between; gap:8px}
+    .editor-heading h2 {font-size:18px; letter-spacing:-.5px; font-weight:600}
+    .editor-heading p {font-size:11px; color:var(--text-muted); margin-top:4px}
+    .template-row {display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border:1px dashed var(--border-strong); border-radius:9px; font-size:10px; color:var(--text-muted)}
+    .template-row .select-input {max-width:160px; min-width:0; padding:5px; font-size:10px}
+    .add-item-row {gap:6px}
+    .text-input {min-width:0; width:0; padding:11px 12px; font-size:12px}
+    .weight-input {flex:0 0 54px; width:54px; padding:5px; font-size:12px}
+    .add-item-row .primary-btn {font-size:12px}
+    .mini-btn {font-size:10px; font-weight:500; padding:6px 8px; background:none}
+    .items-list {gap:7px; min-height:70px; flex:1}
+    .item-row {padding:11px 10px; gap:7px; background:var(--bg-elevated); border:1px solid transparent; border-radius:9px; flex-shrink:0}
+    .item-name-input {font-size:12px; min-width:0; width:0; padding:4px 0}
+    .color-dot {width:8px; height:8px}
+    .odds-badge {background:none; padding:0; font-size:9px; font-variant-numeric:tabular-nums}
+    .weight-stepper {border-color:var(--border); background:var(--bg-surface); flex-shrink:0}
+    .weight-stepper button {min-width:22px; min-height:28px; padding:2px 4px}
+    .weight-stepper span {font-size:10px; padding:0 2px}
+    .row-action-btn {width:25px; height:28px; flex-shrink:0; padding:0; font-size:12px}
+    .item-row.disabled {opacity:.6}
+    .item-row.mystery-row {border-color:rgba(212,172,241,.25); background:var(--bg-elevated)}
+    .icon-btn.active-pill {background:rgba(212,172,241,.08); color:var(--mystery); border-color:rgba(212,172,241,.3); box-shadow:none}
+    .entry-note {font-size:10px; color:var(--text-muted); padding-top:12px; border-top:1px solid var(--border); line-height:1.7}
+    .empty-state {text-align:center; padding:45px 10px; color:var(--text-muted); font-size:12px}
+    .empty-state strong {display:block; color:var(--text-main); font-size:15px; margin-bottom:7px}
+    .winner-title {overflow-wrap:anywhere; font-size:clamp(25px,5vw,42px)}
+    .winner-trophy {animation:none}
+    .winner-modal {max-height:90dvh; overflow:auto}
+    .lb-top {gap:12px; overflow-wrap:anywhere}
+    .lb-top span:last-child {white-space:nowrap}
+    footer {background:none; font-size:10px; padding:17px 3.2%; margin-top:auto; gap:15px}
+    .kbd-shortcuts {gap:16px; font-size:10px}
+    kbd {font-size:9px; padding:1px 4px}
+    .toast {position:fixed; bottom:24px; left:50%; transform:translate(-50%,15px); max-width:calc(100vw - 32px); padding:12px 20px; border:1px solid var(--border-strong); border-radius:10px; background:var(--bg-surface); color:var(--text-main); z-index:200; box-shadow:var(--shadow-lg); font-size:12px; opacity:0; pointer-events:none; transition:opacity .18s,transform .18s}
+    .toast.visible {opacity:1; transform:translate(-50%,0)}
+    @media(min-width:1500px) {.page-intro {padding-left:46px; padding-right:46px} main{padding-left:46px; padding-right:46px}}
+    @media(max-width:1180px) {header{flex-wrap:wrap}.workspace-bar{margin-left:10px}.header-actions{width:100%;justify-content:flex-end}.stage-top-bar{flex-wrap:wrap}.wheel-stage{padding:18px}.canvas-container{width:min(100%,420px)}}
+    @media(max-width:960px) {main{grid-template-columns:minmax(0,1fr)}.wheel-stage{min-height:0;padding-bottom:24px}.control-panel{height:640px}.canvas-container{width:min(100%,430px)}.header-actions{width:auto}.workspace-bar{order:3;flex-basis:100%;margin-left:0}.page-intro{margin-top:26px}.wheel-heading{margin-top:18px}.stage-top-bar{flex-wrap:nowrap}}
+    @media(max-width:540px) {header{padding:16px;gap:12px}.brand-title{font-size:16px}.brand-badge{font-size:7px}.brand-logo{width:34px;height:34px}.header-actions{margin-left:auto;gap:4px}.header-actions .icon-btn{font-size:10px;padding:6px}#quickMysteryBtn,#fullscreenBtn{display:none}.page-intro{padding:0 16px;flex-direction:column;align-items:flex-start;gap:12px;margin:24px 0 20px}h1{font-size:30px;letter-spacing:-1.1px}.page-intro p{font-size:12px}.save-status{font-size:10px}main{padding:0 12px 22px;gap:16px}.wheel-stage{padding:15px 10px 20px;border-radius:16px}.stage-top-bar{flex-wrap:wrap;justify-content:center}.stage-pills{justify-content:center}.wheel-heading{margin-top:20px}.canvas-container{width:min(100%,360px)}.hub-btn{width:64px;height:64px;border-width:5px}.spin-controls-row{gap:7px}#mainSpinBtn{min-width:150px;font-size:13px}#autoRaceBtn{font-size:11px}.tab-pane{padding:16px 12px;gap:14px}.item-row{padding:9px 6px;gap:5px}.item-name-input{font-size:11px}.row-action-btn{width:23px}.odds-badge{font-size:8px}.weight-stepper button{min-width:20px}.weight-stepper span{font-size:9px;min-width:22px}.template-row{padding:10px;gap:8px}.template-row label{max-width:115px}.control-panel{height:640px}.entry-note{font-size:9px}.footer-note{display:none}footer{padding:16px}.kbd-shortcuts{gap:9px;font-size:9px}.modal-actions{flex-direction:column}}
+    .race-controls {width:100%; border:1px solid var(--border-strong); border-radius:12px; background:var(--bg-elevated); padding:14px 16px; margin-top:20px}
+    .chance-row {display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; padding:10px 12px; background:var(--bg-elevated); border-radius:9px; font-size:11px}
+    .chance-row label {flex:1; color:var(--text-muted)}
+    .chance-row .select-input {font-size:11px; padding:5px 8px}
+    #chanceModeHint {flex-basis:100%; font-size:10px; color:var(--text-muted); line-height:1.5}
+    .race-config {display:flex; align-items:center; gap:10px}
+    .race-config>div {flex:1}
+    .race-label {display:block; color:var(--accent); font-size:8px; font-weight:700; letter-spacing:1.5px; margin-bottom:4px}
+    .race-goal {font-size:12px; color:var(--text-main)}
+    #raceTargetInput {width:66px; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-strong); border-radius:6px; padding:4px 6px; text-align:center; font-size:13px; font-weight:700; margin:0 3px}
+    #autoRaceBtn {background:var(--accent); color:var(--bg-base); padding:10px 16px; font-size:12px; white-space:nowrap}
+    .race-summary {font-size:10px; color:var(--text-muted); margin-top:10px; overflow-wrap:anywhere}
+    #raceProgress {appearance:none; width:100%; height:4px; display:block; margin-top:8px; border:0; border-radius:10px; overflow:hidden; background:var(--bg-surface); accent-color:var(--accent)}
+    #raceProgress::-webkit-progress-bar {background:var(--bg-surface)}
+    #raceProgress::-webkit-progress-value {background:var(--accent); border-radius:10px}
+    #raceProgress::-moz-progress-bar {background:var(--accent)}
+    .wheel-stage {min-height:780px}
+    .control-panel {height:780px}
+    .wheel-heading {margin-top:20px}
+    .canvas-container {width:min(100%,410px)}
+    @media(max-width:960px){.wheel-stage{min-height:0}.control-panel{height:640px}}
+    @media(max-width:540px){.race-controls{padding:12px;margin-top:16px}.race-config{gap:6px}.race-goal{font-size:10px}#raceTargetInput{width:50px;font-size:12px}#autoRaceBtn{padding:9px 10px;font-size:11px}#resetRaceBtn{font-size:9px;padding:5px}.race-summary{font-size:9px}.canvas-container{width:min(100%,350px)}}
+    @media(prefers-reduced-motion:reduce) {*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
 <body>
@@ -938,10 +1065,10 @@
 
   <header>
     <div class="brand">
-      <div class="brand-logo">◎</div>
+      <div class="brand-logo" aria-hidden="true">◴</div>
       <div>
         <span class="brand-title">Picker Studio</span>
-        <span class="brand-badge">ULTRA v3.0</span>
+        <span class="brand-badge">DECISION STUDIO</span>
       </div>
     </div>
 
@@ -956,6 +1083,10 @@
     </div>
   </header>
 
+  <div class="page-intro">
+    <div><div class="eyebrow">A LITTLE SPIN. A CLEAR DECISION.</div><h1>Leave it to the wheel<span>.</span></h1><p>Big ideas, small choices. Give chance a turn.</p></div>
+    <div class="save-status" id="saveStatus" role="status">● Saved on this device</div>
+  </div>
   <main>
     <!-- LEFT: Wheel Stage -->
     <section class="wheel-stage">
@@ -968,6 +1099,7 @@
           <div class="status-pill" id="raceStatusPill">
             🎯 Goal: 3 Wins
           </div>
+          <span class="status-pill" id="chanceModeBadge">Equal chances</span>
         </div>
 
         <div class="stage-pills">
@@ -976,21 +1108,30 @@
         </div>
       </div>
 
+      <div class="race-controls" aria-label="Automatic target race">
+        <div class="race-config">
+          <div><label class="race-label" for="raceTargetInput">RACE TO A TARGET</label><div class="race-goal">First to <input id="raceTargetInput" type="number" min="1" max="1000000" step="1" value="3" aria-label="Race target points" /> points wins</div></div>
+          <button class="primary-btn" id="autoRaceBtn">▷ Start race</button>
+          <button class="mini-btn" id="resetRaceBtn" title="Reset all scores to zero">↺ Reset</button>
+        </div>
+        <div class="race-summary" id="raceLeaderStatus" role="status" aria-live="polite">Spins repeat automatically until an entry reaches your target.</div>
+        <progress id="raceProgress" value="0" max="3" aria-label="Leading entry’s progress toward the race target"></progress>
+      </div>
+      <div class="wheel-heading"><h2 id="wheelTitle">Main Wheel</h2><span>YOUR NEXT MOVE, RANDOMLY SELECTED</span></div>
       <div class="canvas-container">
-        <canvas id="wheelCanvas"></canvas>
+        <canvas id="wheelCanvas" role="img" aria-label="Decision wheel. Use the Spin wheel button to pick an entry."></canvas>
         <button class="hub-btn" id="hubSpinBtn" title="Press Space to Spin">
           <span>SPIN</span>
           <small>SPACE</small>
         </button>
       </div>
 
-      <div class="live-callout" id="livePointerCallout">
+      <div class="live-callout" id="livePointerCallout" role="status" aria-live="polite">
         Ready to spin — press <kbd>Space</kbd> or click the wheel
       </div>
 
       <div class="spin-controls-row">
-        <button class="primary-btn" id="mainSpinBtn">⚡ Spin Wheel</button>
-        <button class="icon-btn" id="autoRaceBtn">🏁 Auto-Race</button>
+        <button class="primary-btn" id="mainSpinBtn">↻ Spin wheel</button>
         <button class="danger-btn" id="stopSpinBtn" style="display:none;">⏹ Stop</button>
         <button class="icon-btn" id="restoreEliminatedBtn" style="display:none;">♻ Restore Eliminated</button>
         <button class="icon-btn" id="reMaskAllBtn" style="display:none;">🕵️ Re-Mask All</button>
@@ -998,8 +1139,8 @@
     </section>
 
     <!-- RIGHT: Studio Control Panel -->
-    <aside class="control-panel">
-      <div class="panel-tabs">
+    <aside class="control-panel" aria-label="Wheel editor">
+      <div class="panel-tabs" role="tablist" aria-label="Wheel controls">
         <button class="panel-tab active" data-tab="entries">Entries</button>
         <button class="panel-tab" data-tab="leaderboard">Leaderboard</button>
         <button class="panel-tab" data-tab="history">History</button>
@@ -1008,9 +1149,12 @@
 
       <!-- TAB 1: Entries -->
       <div class="tab-pane active" id="tab-entries">
+        <div class="editor-heading"><div><h2>Make it your own</h2><p>Add your choices. We’ll take it from here.</p></div><button class="mini-btn" id="undoBtn" title="Undo last edit (Ctrl+Z)" disabled>↶ Undo</button></div>
+        <div class="chance-row"><label for="chanceModeSelect">Selection odds</label><select id="chanceModeSelect" class="select-input"><option value="equal">Equal chances</option><option value="weighted">Custom weights</option></select><span id="chanceModeHint">Every active entry has the same chance.</span></div>
+        <div class="template-row"><label for="templateSelect">Start with a little inspiration</label><select id="templateSelect" class="select-input"><option value="">Choose a starter…</option><option value="food">What’s for dinner?</option><option value="weekend">Weekend plans</option><option value="focus">A productive break</option><option value="yesno">Yes or no?</option><option value="blank">Empty wheel</option></select></div>
         <form class="add-item-row" id="addItemForm">
-          <input type="text" class="text-input" id="newItemName" placeholder="Add new slice entry..." required />
-          <input type="number" class="text-input weight-input" id="newItemWeight" value="1" min="1" max="99" title="Slice Weight" />
+          <input type="text" class="text-input" id="newItemName" placeholder="Add a choice…" aria-label="New entry name" maxlength="300" required />
+          <input type="number" class="text-input weight-input" id="newItemWeight" value="1" min="1" max="99" title="Slice Weight" aria-label="New entry weight" />
           <button type="submit" class="primary-btn" style="padding: 0.6rem 0.95rem;">+ Add</button>
         </form>
 
@@ -1118,7 +1262,7 @@ Item 3 * 5"></textarea>
               <span class="setting-sub">Slice color harmony</span>
             </div>
             <select class="select-input" id="paletteSelect">
-              <option value="cyber">Cyber Neon</option>
+              <option value="cyber">Studio Botanical</option>
               <option value="studio">Studio Vibrant</option>
               <option value="ember">Sunset Ember</option>
               <option value="emerald">Emerald Forest</option>
@@ -1140,7 +1284,7 @@ Item 3 * 5"></textarea>
               <strong>Target Score (Race Goal)</strong>
               <span class="setting-sub">Wins required in Auto-Race</span>
             </div>
-            <input type="number" class="num-input" id="targetScoreInput" min="1" max="100" value="3" style="width:68px;" />
+            <input type="number" class="num-input" id="targetScoreInput" min="1" max="1000000" value="3" style="width:68px;" />
           </div>
 
           <div class="setting-row">
@@ -1168,10 +1312,8 @@ Item 3 * 5"></textarea>
             <button class="mini-btn" id="deleteWsBtn">🗑 Delete</button>
             <button class="mini-btn" id="exportJsonBtn">⬇ JSON</button>
             <button class="mini-btn" id="exportCsvBtn">📊 CSV</button>
-            <label class="mini-btn" style="cursor:pointer;">
-              ⬆ Import
-              <input type="file" id="importFileInput" accept=".json,.csv,.txt" style="display:none;" />
-            </label>
+            <button class="mini-btn" id="importBtn" type="button">⬆ Import</button>
+            <input type="file" id="importFileInput" accept=".json,.csv,.txt" style="display:none;" />
           </div>
         </div>
       </div>
@@ -1179,7 +1321,7 @@ Item 3 * 5"></textarea>
   </main>
 
   <!-- Winner Celebration Modal -->
-  <div class="modal-backdrop" id="winnerModal">
+  <div class="modal-backdrop" id="winnerModal" role="dialog" aria-modal="true" aria-labelledby="modalWinnerName" aria-describedby="modalWinnerMeta" tabindex="-1">
     <div class="modal-card">
       <div class="winner-trophy" id="modalTrophyIcon">🏆</div>
       <div class="winner-tag" id="modalBadgeText">SELECTED WINNER</div>
@@ -1202,9 +1344,10 @@ Item 3 * 5"></textarea>
       <span><kbd>M</kbd> Mute</span>
       <span><kbd>F</kbd> Fullscreen</span>
     </div>
-    <div>Picker Studio Pro v3.0 • Multi-Synth Web Audio & Cryptographic RNG</div>
+    <div>Made for the undecided. <span class="footer-note">No account. No tracking. Just a fair spin.</span></div>
   </footer>
 
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
     /**************************************************************
      * PICKER STUDIO PRO v3.0 — ULTRA ENGINE
@@ -1212,7 +1355,7 @@ Item 3 * 5"></textarea>
     const STORAGE_KEY = 'picker_studio_pro_v3_state';
 
     const PALETTES = {
-      cyber:   ['#6366f1', '#ec4899', '#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#3b82f6', '#f43f5e'],
+      cyber:   ['#82b5a2','#d4b57a','#929cc5','#c58d90','#91ad72','#ab91bd','#75a8b5','#c4a482'],
       studio:  ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'],
       ember:   ['#fb7185', '#f43f5e', '#e11d48', '#f97316', '#fb923c', '#facc15', '#a855f7', '#ec4899'],
       emerald: ['#059669', '#10b981', '#34d399', '#0d9488', '#14b8a6', '#0284c7', '#65a30d', '#84cc16'],
@@ -1234,11 +1377,12 @@ Item 3 * 5"></textarea>
       mysteryMode: false,
       progressiveReveal: true,
       rimLeds: true,
+      weighted: false,
       items: items || [
-        { id: '1', name: 'Deep Work Sprint', weight: 2, wins: 0, active: true, mystery: false, revealed: false },
+        { id: '1', name: 'Deep Work Sprint', weight: 1, wins: 0, active: true, mystery: false, revealed: false },
         { id: '2', name: 'Read 20 Pages', weight: 1, wins: 0, active: true, mystery: false, revealed: false },
         { id: '3', name: 'Workout Session', weight: 1, wins: 0, active: true, mystery: false, revealed: false },
-        { id: '4', name: 'Code Feature', weight: 2, wins: 0, active: true, mystery: false, revealed: false },
+        { id: '4', name: 'Code Feature', weight: 1, wins: 0, active: true, mystery: false, revealed: false },
         { id: '5', name: 'Secret Bonus Reward', weight: 1, wins: 0, active: true, mystery: true, revealed: false },
         { id: '6', name: 'Language Practice', weight: 1, wins: 0, active: true, mystery: false, revealed: false }
       ],
@@ -1263,6 +1407,53 @@ Item 3 * 5"></textarea>
     let lastSliceIndexUnderPointer = -1;
     let lastWonItemId = null;
     let ledPhase = 0;
+    let raceTimer = null;
+    let revealTimer = null;
+    let toastTimer = null;
+    let returnFocus = null;
+    let storageProtected = false;
+    const undoStack = [];
+    const makeId = () => window.crypto.randomUUID ? window.crypto.randomUUID() : 'id_' + Date.now() + '_' + cryptoRandom().toString(36).slice(2);
+    const clamp = (value, min, max, fallback) => Number.isFinite(Number(value)) ? Math.min(max, Math.max(min, Number(value))) : fallback;
+    const safeColor = value => /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(value) ? value : '#82b5a2';
+    const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function notify(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 3200);
+    }
+    function rememberEdit() {
+      undoStack.push({ id: getActiveWs().id, value: JSON.stringify(getActiveWs()) });
+      if (undoStack.length > 30) undoStack.shift();
+    }
+    function normalizeWorkspace(source) {
+      if (!source || typeof source !== 'object' || !Array.isArray(source.items)) throw new Error('A wheel needs an items array.');
+      const ws = createDefaultWorkspace(String(source.name || 'Imported wheel').slice(0, 100), []);
+      ws.palette = PALETTES[source.palette] ? source.palette : 'cyber';
+      ws.spinDuration = clamp(source.spinDuration ?? source.duration, 1, 15, 4);
+      ws.targetScore = Math.round(clamp(source.targetScore, 1, 1000000, 3));
+      ws.weighted = typeof source.weighted === 'boolean' ? source.weighted : source.items.some(item => Number(item?.weight || 1) !== 1);
+      for (const key of ['autoRemove','mysteryMode']) ws[key] = source[key] === true;
+      for (const key of ['showModal','progressiveReveal','rimLeds']) ws[key] = source[key] !== false;
+      if (source.items.length > 1000) throw new Error('A wheel supports up to 1,000 entries.');
+      ws.items = source.items.map(item => {
+        const obj = typeof item === 'string' ? {name:item} : item;
+        if (!obj || typeof obj !== 'object') return null;
+        const name = String(obj.name ?? obj.text ?? '').trim().slice(0, 300);
+        if (!name) return null;
+        return {id:makeId(), name, weight:Math.round(clamp(obj.weight ?? 1,1,99,1)), wins:Math.floor(clamp(obj.wins ?? obj.count ?? 0,0,1000000,0)), active:obj.active !== false, mystery:obj.mystery === true, revealed:obj.revealed === true};
+      }).filter(Boolean);
+      ws.history = Array.isArray(source.history) ? source.history.slice(0,100).filter(e => e && typeof e === 'object').map(e => ({name:String(e.name || '').slice(0,300), color:safeColor(e.color), wasMystery:e.wasMystery === true, time:String(e.time || '').slice(0,50)})) : [];
+      return ws;
+    }
+    function normalizeState(source) {
+      if (!source || !Array.isArray(source.workspaces) || !source.workspaces.length) throw new Error('No wheels found in this backup.');
+      const workspaces = source.workspaces.map(normalizeWorkspace);
+      const activeIndex = Math.max(0,source.workspaces.findIndex(w => w.id === source.activeWorkspaceId));
+      return {theme:source.theme === 'light' ? 'light' : 'dark', muted:source.muted === true, volume:clamp(source.volume ?? .8,0,1,.8), soundProfile:SOUND_PROFILES.includes(source.soundProfile) ? source.soundProfile : 'mechanical', workspaces, activeWorkspaceId:workspaces[Math.min(activeIndex,workspaces.length-1)].id};
+    }
 
     /**************************************************************
      * MULTI-PROFILE WEB AUDIO SYNTHESIZER
@@ -1271,9 +1462,10 @@ Item 3 * 5"></textarea>
     function initAudio() {
       if (!audioCtx) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
+        if (!AudioContext) return;
+        try { audioCtx = new AudioContext(); } catch { return; }
       }
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
     }
 
     function playPegTick(speedRatio = 0.5, sliceIndex = 0) {
@@ -1381,59 +1573,53 @@ Item 3 * 5"></textarea>
      * STATE MANAGEMENT & MIGRATION
      **************************************************************/
     function loadState() {
+      let loaded = false;
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('picker_studio_pro_v2_state');
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && Array.isArray(parsed.workspaces) && parsed.workspaces.length > 0) {
-            state = { ...state, ...parsed };
+        for (const key of [STORAGE_KEY, 'picker_studio_pro_v2_state', 'pickerStudioUltraData']) {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          try {
+            const data = JSON.parse(raw);
+            state = normalizeState(key === 'pickerStudioUltraData' ? {workspaces:[{...data,name:'My original wheel'}],theme:data.theme,muted:data.soundEnabled === false} : data);
+            loaded = true;
+            break;
+          } catch {
+            try { localStorage.setItem(key + '_recovery_' + Date.now(), raw); }
+            catch { storageProtected = true; }
+            notify('A saved wheel could not be read. Its original data has been preserved for recovery.');
           }
         }
-      } catch (e) {}
-
-      if (!state.workspaces || state.workspaces.length === 0) {
-        const def = createDefaultWorkspace();
-        state.workspaces = [def];
-        state.activeWorkspaceId = def.id;
+      } catch { notify('Browser storage is unavailable. You can still spin and export a backup.'); }
+      if (!loaded) {
+        const ws = createDefaultWorkspace();
+        state.workspaces = [ws]; state.activeWorkspaceId = ws.id;
       }
-
-      // Normalize workspace properties
-      state.workspaces.forEach(ws => {
-        if (typeof ws.mysteryMode !== 'boolean') ws.mysteryMode = false;
-        if (typeof ws.progressiveReveal !== 'boolean') ws.progressiveReveal = true;
-        if (typeof ws.rimLeds !== 'boolean') ws.rimLeds = true;
-        ws.items.forEach(item => {
-          if (typeof item.mystery !== 'boolean') item.mystery = false;
-          if (typeof item.revealed !== 'boolean') item.revealed = false;
-        });
-      });
-
-      // Check URL Hash for Shared Wheel (#wheel=...)
       if (window.location.hash.startsWith('#wheel=')) {
         try {
-          const encoded = window.location.hash.replace('#wheel=', '');
-          const decoded = JSON.parse(decodeURIComponent(atob(encoded)));
-          if (decoded && decoded.name && Array.isArray(decoded.items)) {
-            const importedWs = createDefaultWorkspace(decoded.name + ' (Shared)', decoded.items);
-            importedWs.palette = decoded.palette || 'cyber';
-            importedWs.mysteryMode = Boolean(decoded.mysteryMode);
-            state.workspaces.push(importedWs);
-            state.activeWorkspaceId = importedWs.id;
-            history.replaceState(null, '', window.location.pathname);
-          }
-        } catch (err) {}
+          if (window.location.hash.length > 500000) throw new Error('Share link is too large.');
+          const data = JSON.parse(decodeURIComponent(atob(window.location.hash.slice(7))));
+          const ws = normalizeWorkspace(data);
+          ws.name = String(data.name || 'Wheel').slice(0,85) + ' (Shared)';
+          state.workspaces.push(ws); state.activeWorkspaceId = ws.id;
+          try { history.replaceState(null,'',window.location.pathname + window.location.search); } catch {}
+          notify('Shared wheel added to your studio.');
+        } catch { notify('This wheel link could not be opened. Check that the complete link was copied.'); }
       }
-
-      document.documentElement.setAttribute('data-theme', state.theme || 'dark');
+      document.documentElement.setAttribute('data-theme',state.theme);
     }
 
-    function saveState() {
+        function saveState() {
+      const status = document.getElementById('saveStatus');
       try {
+        if (storageProtected) throw new Error('Preserving unreadable saved data.');
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {}
+        status.textContent = '● Saved on this device';
+      } catch {
+        status.textContent = '○ Not saved — export a backup in Studio';
+      }
     }
 
-    function getActiveWs() {
+        function getActiveWs() {
       return state.workspaces.find(w => w.id === state.activeWorkspaceId) || state.workspaces[0];
     }
 
@@ -1458,6 +1644,26 @@ Item 3 * 5"></textarea>
       return array[0] / (0xffffffff + 1);
     }
 
+    // Rejection sampling prevents modulo bias: every integer ticket is equally likely.
+    // Only this cryptographic generator is used for selection; Math.random is cosmetic.
+    function cryptoRandomInt(max) {
+      if (!Number.isSafeInteger(max) || max < 1 || max > 0x100000000) throw new Error('Invalid random range.');
+      const limit = Math.floor(0x100000000 / max) * max;
+      const word = new Uint32Array(1);
+      do { window.crypto.getRandomValues(word); } while (word[0] >= limit);
+      return word[0] % max;
+    }
+    function getItemWeight(item) {
+      return getActiveWs().weighted ? Math.round(clamp(item.weight ?? 1,1,99,1)) : 1;
+    }
+    function chooseRandomSlice(slices) {
+      let ticket = cryptoRandomInt(slices.reduce((sum,slice) => sum + getItemWeight(slice.item),0));
+      for (const slice of slices) {
+        ticket -= getItemWeight(slice.item);
+        if (ticket < 0) return slice;
+      }
+    }
+
     /**************************************************************
      * HI-DPI CANVAS WHEEL, CASINO LEDS & MYSTERY RENDERER
      **************************************************************/
@@ -1468,11 +1674,11 @@ Item 3 * 5"></textarea>
       const ws = getActiveWs();
       const palette = PALETTES[ws.palette] || PALETTES.cyber;
       const activeItems = getActiveItems();
-      const totalWeight = activeItems.reduce((acc, item) => acc + (Number(item.weight) || 1), 0);
+      const totalWeight = activeItems.reduce((acc, item) => acc + getItemWeight(item), 0);
 
       let cursor = 0;
       return activeItems.map((item, idx) => {
-        const weight = Number(item.weight) || 1;
+        const weight = getItemWeight(item);
         const arc = totalWeight > 0 ? (weight / totalWeight) * Math.PI * 2 : 0;
         const slice = {
           item,
@@ -1482,7 +1688,7 @@ Item 3 * 5"></textarea>
           arc,
           masked: isSliceMasked(item),
           odds: totalWeight > 0 ? ((weight / totalWeight) * 100).toFixed(1) : '0.0',
-          color: palette[idx % palette.length]
+          color: palette[ws.items.indexOf(item) % palette.length]
         };
         cursor += arc;
         return slice;
@@ -1509,6 +1715,7 @@ Item 3 * 5"></textarea>
         canvas.height = Math.round(rect.height * dpr);
       }
 
+      if (rect.width < 50 || rect.height < 50) return;
       ctx.save();
       ctx.scale(dpr, dpr);
 
@@ -1524,7 +1731,7 @@ Item 3 * 5"></textarea>
       // Outer Casino Bezel Ring
       ctx.beginPath();
       ctx.arc(cx, cy, radius + 14, 0, Math.PI * 2);
-      ctx.fillStyle = state.theme === 'dark' ? '#0f172a' : '#cbd5e1';
+      ctx.fillStyle = state.theme === 'dark' ? '#303930' : '#d4d9c9';
       ctx.fill();
       ctx.lineWidth = 3;
       ctx.strokeStyle = ws.mysteryMode ? 'rgba(236, 72, 153, 0.45)' : 'rgba(255, 255, 255, 0.16)';
@@ -1544,8 +1751,8 @@ Item 3 * 5"></textarea>
           ctx.beginPath();
           ctx.arc(lx, ly, 2.8, 0, Math.PI * 2);
           if (isLit) {
-            ctx.fillStyle = ws.mysteryMode ? '#f472b6' : '#fde047';
-            ctx.shadowColor = ws.mysteryMode ? '#ec4899' : '#facc15';
+            ctx.fillStyle = ws.mysteryMode ? '#d4acf1' : '#e7efb2';
+            ctx.shadowColor = ws.mysteryMode ? '#d4acf1' : '#c3f279';
             ctx.shadowBlur = 8;
           } else {
             ctx.fillStyle = 'rgba(255,255,255,0.2)';
@@ -1617,7 +1824,7 @@ Item 3 * 5"></textarea>
         const label = displayStr.length > maxTextLen ? displayStr.slice(0, maxTextLen - 1) + '…' : displayStr;
         const fontSize = Math.max(10, Math.min(16, Math.floor(s.arc * radius * 0.22)));
         ctx.font = `800 ${fontSize}px Inter, sans-serif`;
-        ctx.fillText(label, radius - 22, 0);
+        if (s.arc * radius > 13) ctx.fillText(label, radius - 22, 0, Math.max(20,radius - 78));
         ctx.restore();
 
         // Rim Peg at Slice Boundary
@@ -1652,7 +1859,7 @@ Item 3 * 5"></textarea>
       ctx.lineTo(9, -13);
       ctx.lineTo(9, 13);
       ctx.closePath();
-      ctx.fillStyle = '#f43f5e';
+      ctx.fillStyle = '#e7efb2';
       ctx.shadowColor = 'rgba(0,0,0,0.65)';
       ctx.shadowBlur = 10;
       ctx.fill();
@@ -1687,19 +1894,25 @@ Item 3 * 5"></textarea>
      **************************************************************/
     function triggerSpin() {
       const activeItems = getActiveItems();
-      if (isSpinning || activeItems.length === 0) return;
+      if (isSpinning || activeItems.length === 0 || document.getElementById('winnerModal').classList.contains('open')) return;
+      clearTimeout(raceTimer);
+      raceTimer = null;
 
       initAudio();
       isSpinning = true;
       lastWonItemId = null;
+      lastSliceIndexUnderPointer = -1;
+      document.getElementById('livePointerCallout').setAttribute('aria-live','off');
       updateButtonsState();
 
       const ws = getActiveWs();
-      const durationMs = Math.max(1, Number(ws.spinDuration) || 4) * 1000;
-      const extraSpins = (5.5 + cryptoRandom() * 5) * Math.PI * 2;
-      const randomOffset = cryptoRandom() * Math.PI * 2;
+      const durationMs = reducedMotion() ? 180 : Math.max(1, Number(ws.spinDuration) || 4) * 1000;
+      const selectedSlice = chooseRandomSlice(getSliceAngles());
+      const landing = selectedSlice.startAngle + selectedSlice.arc * (0.12 + cryptoRandom() * 0.76);
+      const finalAngle = (Math.PI * 2 - landing) % (Math.PI * 2);
+      const extraSpins = (6 + cryptoRandomInt(5)) * Math.PI * 2;
       const startAngle = currentAngle;
-      const targetAngle = startAngle + extraSpins + randomOffset;
+      const targetAngle = startAngle + extraSpins + ((finalAngle - (startAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2));
       const startTime = performance.now();
 
       function animateSpin(now) {
@@ -1735,16 +1948,19 @@ Item 3 * 5"></textarea>
     }
 
     function stopSpinImmediately() {
-      if (spinAnimFrame) cancelAnimationFrame(spinAnimFrame);
-      isSpinning = false;
-      isAutoRacing = false;
-      pointerDeflection = 0;
-      drawWheel();
-      updateButtonsState();
+      if (spinAnimFrame !== null) cancelAnimationFrame(spinAnimFrame);
+      clearTimeout(raceTimer); raceTimer = null; spinAnimFrame = null;
+      isSpinning = false; isAutoRacing = false; pointerDeflection = 0;
+      currentAngle = ((currentAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+      document.getElementById('livePointerCallout').setAttribute('aria-live','polite');
+      document.getElementById('livePointerCallout').textContent = 'Paused. Ready whenever you are.';
+      drawWheel(); updateButtonsState();
     }
 
-    function finalizeSpinWinner() {
+        function finalizeSpinWinner() {
       isSpinning = false;
+      spinAnimFrame = null;
+      currentAngle = ((currentAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
       const winningSlice = getSliceUnderPointer(currentAngle);
       if (!winningSlice) {
         updateButtonsState();
@@ -1782,6 +1998,7 @@ Item 3 * 5"></textarea>
       renderAll();
 
       const callout = document.getElementById('livePointerCallout');
+      callout.setAttribute('aria-live','polite');
       callout.classList.remove('mystery-active');
       callout.innerHTML = `${wasMaskedBeforeWin ? '🕵️ Unmasked Winner:' : '🏆 Winner:'} <strong>${escapeHtml(winner.name)}</strong> (${winner.wins} wins)`;
 
@@ -1793,7 +2010,8 @@ Item 3 * 5"></textarea>
       } else if (isAutoRacing) {
         playWinFanfare(false, wasMaskedBeforeWin);
         fireCelebration(false);
-        setTimeout(() => {
+        raceTimer = setTimeout(() => {
+          raceTimer = null;
           if (isAutoRacing && getActiveItems().length > 0) {
             triggerSpin();
           } else {
@@ -1817,7 +2035,13 @@ Item 3 * 5"></textarea>
         stopSpinImmediately();
         return;
       }
-      if (getActiveItems().length === 0) return;
+      if (getActiveItems().length === 0 || isSpinning) return;
+      closeWinnerModal();
+      if (getActiveItems().some(item => item.wins >= getActiveWs().targetScore)) {
+        rememberEdit();
+        getActiveWs().items.forEach(item => item.wins = 0);
+        renderLeaderboard();
+      }
       isAutoRacing = true;
       updateButtonsState();
       triggerSpin();
@@ -1833,6 +2057,7 @@ Item 3 * 5"></textarea>
     let confettiAnim = null;
 
     function fireCelebration(intense = false) {
+      if (reducedMotion()) return;
       confettiCanvas.width = window.innerWidth;
       confettiCanvas.height = window.innerHeight;
       const colors = PALETTES[getActiveWs().palette] || PALETTES.cyber;
@@ -1951,9 +2176,16 @@ Item 3 * 5"></textarea>
      * UI RENDERING & SYNCHRONIZATION
      **************************************************************/
     function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, m => ({
-        '&': '&', '<': '<', '>': '>', '"': '"', "'": '''
-      }[m]));
+      return String(str).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+
+    function closeWinnerModal() {
+      clearTimeout(revealTimer);
+      const modal = document.getElementById('winnerModal');
+      const wasOpen = modal.classList.contains('open');
+      modal.classList.remove('open');
+      for (const el of document.querySelectorAll('header,.page-intro,main,footer')) el.inert = false;
+      if (wasOpen && returnFocus && returnFocus.isConnected && !returnFocus.disabled) returnFocus.focus();
     }
 
     function updateButtonsState() {
@@ -1961,6 +2193,25 @@ Item 3 * 5"></textarea>
       const activeCount = getActiveItems().length;
       const eliminatedCount = ws.items.length - activeCount;
       const anyRevealed = ws.items.some(i => i.revealed);
+      const locked = isSpinning || isAutoRacing;
+      document.getElementById('chanceModeBadge').textContent = ws.weighted ? 'Custom weighted odds' : 'Equal chances';
+      document.getElementById('newItemWeight').style.display = ws.weighted ? '' : 'none';
+      document.getElementById('raceTargetInput').disabled = locked;
+      document.getElementById('resetRaceBtn').disabled = locked;
+      const leader = [...getActiveItems()].sort((a,b) => b.wins - a.wins)[0];
+      const leaderWins = leader?.wins || 0;
+      const leaderName = leader && isSliceMasked(leader) ? 'Mystery entry' : leader?.name;
+      document.getElementById('raceLeaderStatus').textContent = leaderWins > 0
+        ? (leaderWins >= ws.targetScore && !locked ? 'Target reached: ' : 'Leading: ') + leaderName + ' · ' + leaderWins + ' / ' + ws.targetScore + ' points'
+        : 'Spins repeat automatically until an entry reaches your target.';
+      document.getElementById('raceProgress').max = ws.targetScore;
+      document.getElementById('raceProgress').value = Math.min(leaderWins,ws.targetScore);
+      document.getElementById('wheelTitle').textContent = ws.name;
+      document.getElementById('wheelCanvas').setAttribute('aria-label', 'Decision wheel with ' + activeCount + ' active choices.');
+      for (const el of document.querySelectorAll('#tab-entries input,#tab-entries button,#tab-entries select,#bulkTextarea,#tab-settings input:not(#volumeSlider),#tab-settings button,#tab-settings select:not(#soundProfileSelect),#resetScoresBtn,#clearHistoryBtn,#restoreEliminatedBtn,#reMaskAllBtn,#quickMysteryBtn,#stageAutoRemoveBtn,.ws-tab,.ws-add-btn')) el.disabled = locked;
+      document.getElementById('undoBtn').disabled = locked || !undoStack.some(e => e.id === ws.id);
+      document.getElementById('autoRaceBtn').disabled = !isAutoRacing && (isSpinning || activeCount === 0);
+      document.getElementById('mainSpinBtn').textContent = isSpinning ? 'Spinning…' : '↻ Spin wheel';
 
       document.getElementById('activeCountLabel').textContent =
         `${activeCount} Active ${eliminatedCount > 0 ? `(${eliminatedCount} Paused)` : 'Slices'}`;
@@ -1980,12 +2231,12 @@ Item 3 * 5"></textarea>
       autoRemBtn.textContent = ws.autoRemove ? '🚫 Auto-Eliminate: ON' : '⚡ Keep Winner';
       autoRemBtn.classList.toggle('active-pill', Boolean(ws.autoRemove));
 
-      document.getElementById('hubSpinBtn').disabled = isSpinning || activeCount === 0;
-      document.getElementById('mainSpinBtn').disabled = isSpinning || activeCount === 0;
+      document.getElementById('hubSpinBtn').disabled = locked || activeCount === 0;
+      document.getElementById('mainSpinBtn').disabled = locked || activeCount === 0;
       document.getElementById('stopSpinBtn').style.display = (isSpinning || isAutoRacing) ? 'inline-flex' : 'none';
       document.getElementById('restoreEliminatedBtn').style.display = eliminatedCount > 0 ? 'inline-flex' : 'none';
       document.getElementById('reMaskAllBtn').style.display = (anyRevealed && (ws.mysteryMode || ws.items.some(i => i.mystery))) ? 'inline-flex' : 'none';
-      document.getElementById('autoRaceBtn').textContent = isAutoRacing ? '⏸ Pause Race' : '🏁 Auto-Race';
+      document.getElementById('autoRaceBtn').textContent = isAutoRacing ? 'Ⅱ Pause race' : leaderWins >= ws.targetScore ? '▷ New race' : '▷ Start race';
     }
 
     function renderWorkspaces() {
@@ -1996,9 +2247,11 @@ Item 3 * 5"></textarea>
         btn.className = `ws-tab ${ws.id === state.activeWorkspaceId ? 'active' : ''}`;
         btn.textContent = ws.name;
         btn.onclick = () => {
-          if (isSpinning) return;
+          if (isSpinning || isAutoRacing) return;
           state.activeWorkspaceId = ws.id;
           lastWonItemId = null;
+          currentAngle = 0;
+          resetCallout();
           saveState();
           renderAll();
         };
@@ -2009,11 +2262,13 @@ Item 3 * 5"></textarea>
       addBtn.className = 'ws-add-btn';
       addBtn.textContent = '+ New Wheel';
       addBtn.onclick = () => {
+        if (isSpinning || isAutoRacing) return;
         const name = prompt('Name for your new wheel workspace:', `Wheel ${state.workspaces.length + 1}`);
-        if (!name) return;
+        if (!name || !name.trim()) return;
         const nw = createDefaultWorkspace(name.trim());
         state.workspaces.push(nw);
         state.activeWorkspaceId = nw.id;
+        lastWonItemId = null; currentAngle = 0; resetCallout();
         saveState();
         renderAll();
       };
@@ -2023,35 +2278,36 @@ Item 3 * 5"></textarea>
     function renderEntriesList() {
       const ws = getActiveWs();
       const palette = PALETTES[ws.palette] || PALETTES.cyber;
-      const totalWeight = getActiveItems().reduce((s, i) => s + (Number(i.weight) || 1), 0);
+      const totalWeight = getActiveItems().reduce((s, i) => s + getItemWeight(i), 0);
       const container = document.getElementById('itemsList');
       container.innerHTML = '';
 
+      if (!ws.items.length) container.innerHTML = '<div class="empty-state"><strong>A fresh start.</strong>Add your first choice above, or choose a starter.</div>';
       ws.items.forEach((item, idx) => {
         const row = document.createElement('div');
         const masked = isSliceMasked(item);
         row.className = `item-row ${item.active ? '' : 'disabled'} ${masked ? 'mystery-row' : ''}`;
         const color = palette[idx % palette.length];
         const odds = item.active && totalWeight > 0
-          ? (((Number(item.weight) || 1) / totalWeight) * 100).toFixed(1) + '%'
+          ? ((getItemWeight(item) / totalWeight) * 100).toFixed(1) + '%'
           : '0%';
 
         row.innerHTML = `
           <span class="color-dot" style="background:${color}"></span>
-          <input type="text" class="item-name-input" value="${escapeHtml(item.name)}" data-id="${item.id}" />
+          <input type="text" class="item-name-input" value="${escapeHtml(item.name)}" data-id="${escapeHtml(item.id)}" aria-label="Entry name" maxlength="300" />
           <span class="odds-badge" title="Win Probability">${odds}</span>
-          <div class="weight-stepper" title="Slice Weight">
-            <button type="button" data-action="dec" data-id="${item.id}">-</button>
+          <div class="weight-stepper" title="Slice Weight" style="display:${ws.weighted ? 'inline-flex' : 'none'}">
+            <button type="button" aria-label="Decrease weight" data-action="dec" data-id="${escapeHtml(item.id)}">-</button>
             <span>${item.weight || 1}x</span>
-            <button type="button" data-action="inc" data-id="${item.id}">+</button>
+            <button type="button" aria-label="Increase weight" data-action="inc" data-id="${escapeHtml(item.id)}">+</button>
           </div>
-          <button type="button" class="row-action-btn ${item.mystery ? 'mystery-on' : ''}" data-action="mystery" data-id="${item.id}" title="Toggle Individual Mystery Mask (?)">
-            ❓
+          <button type="button" class="row-action-btn ${item.mystery ? 'mystery-on' : ''}" data-action="mystery" data-id="${escapeHtml(item.id)}" title="Toggle Individual Mystery Mask (?)" aria-label="Toggle mystery for ${escapeHtml(item.name)}" aria-pressed="${item.mystery}">
+            ◇
           </button>
-          <button type="button" class="row-action-btn" data-action="toggle" data-id="${item.id}" title="${item.active ? 'Pause Entry' : 'Enable Entry'}">
-            ${item.active ? '👁' : '🚫'}
+          <button type="button" class="row-action-btn" data-action="toggle" data-id="${escapeHtml(item.id)}" title="${item.active ? 'Pause Entry' : 'Enable Entry'}" aria-label="${item.active ? 'Pause' : 'Enable'} ${escapeHtml(item.name)}">
+            ${item.active ? 'Ⅱ' : '▷'}
           </button>
-          <button type="button" class="row-action-btn delete" data-action="delete" data-id="${item.id}" title="Delete Entry">✕</button>
+          <button type="button" class="row-action-btn delete" data-action="delete" data-id="${escapeHtml(item.id)}" title="Delete Entry" aria-label="Delete ${escapeHtml(item.name)}">✕</button>
         `;
         container.appendChild(row);
       });
@@ -2063,7 +2319,7 @@ Item 3 * 5"></textarea>
         if (i.mystery) line += ` ?`;
         return line;
       }).join('\n');
-      document.getElementById('bulkTextarea').value = bulkText;
+      if (!document.getElementById('bulkEditor').classList.contains('active')) document.getElementById('bulkTextarea').value = bulkText;
     }
 
     function renderLeaderboard() {
@@ -2079,7 +2335,7 @@ Item 3 * 5"></textarea>
       sorted.forEach((item, idx) => {
         const wins = Number(item.wins) || 0;
         const pct = Math.min(100, Math.round((wins / target) * 100));
-        const color = palette[idx % palette.length];
+        const color = palette[ws.items.indexOf(item) % palette.length];
         const displayName = isSliceMasked(item) && wins === 0 ? '??? (Undiscovered Slice)' : item.name;
 
         const card = document.createElement('div');
@@ -2112,9 +2368,9 @@ Item 3 * 5"></textarea>
         const row = document.createElement('div');
         row.className = 'item-row';
         row.innerHTML = `
-          <span class="color-dot" style="background:${entry.color || '#6366f1'}"></span>
+          <span class="color-dot" style="background:${safeColor(entry.color)}"></span>
           <strong style="flex:1; font-size:0.85rem;">#${ws.history.length - idx} — ${entry.wasMystery ? '🕵️ ' : ''}${escapeHtml(entry.name)}</strong>
-          <span class="odds-badge">${entry.time}</span>
+          <span class="odds-badge">${escapeHtml(entry.time)}</span>
         `;
         container.appendChild(row);
       });
@@ -2125,6 +2381,8 @@ Item 3 * 5"></textarea>
       document.getElementById('mysteryModeToggle').checked = Boolean(ws.mysteryMode);
       document.getElementById('progressiveRevealToggle').checked = ws.progressiveReveal !== false;
       document.getElementById('rimLedsToggle').checked = ws.rimLeds !== false;
+      document.getElementById('chanceModeSelect').value = ws.weighted ? 'weighted' : 'equal';
+      document.getElementById('chanceModeHint').textContent = ws.weighted ? 'Larger weights mean larger slices and higher chances.' : 'Every active entry has exactly the same chance.';
       document.getElementById('soundProfileSelect').value = state.soundProfile || 'mechanical';
       document.getElementById('volumeSlider').value = Math.round((state.volume ?? 0.8) * 100);
       document.getElementById('volumeValueLabel').textContent = `${Math.round((state.volume ?? 0.8) * 100)}%`;
@@ -2132,6 +2390,7 @@ Item 3 * 5"></textarea>
       document.getElementById('paletteSelect').value = ws.palette || 'cyber';
       document.getElementById('spinDurationInput').value = ws.spinDuration || 4;
       document.getElementById('targetScoreInput').value = ws.targetScore || 3;
+      document.getElementById('raceTargetInput').value = ws.targetScore || 3;
       document.getElementById('autoRemoveToggle').checked = Boolean(ws.autoRemove);
       document.getElementById('showModalToggle').checked = ws.showModal !== false;
 
@@ -2167,7 +2426,8 @@ Item 3 * 5"></textarea>
 
       if (wasMystery) {
         titleEl.textContent = '🕵️ Revealing...';
-        setTimeout(() => {
+        clearTimeout(revealTimer);
+        revealTimer = setTimeout(() => {
           titleEl.textContent = item.name;
         }, 420);
       } else {
@@ -2175,8 +2435,13 @@ Item 3 * 5"></textarea>
       }
 
       document.getElementById('modalWinnerMeta').textContent =
-        `Total Wins: ${item.wins} • Slice Weight: ${item.weight || 1}x`;
+        `Total Wins: ${item.wins} • ${getActiveWs().weighted ? 'Slice weight: ' + getItemWeight(item) + '×' : 'Equal chance selection'}`;
+      returnFocus = document.activeElement;
       modal.classList.add('open');
+      for (const el of document.querySelectorAll('header,.page-intro,main,footer')) el.inert = true;
+      document.getElementById('modalEliminateBtn').disabled = !item.active;
+      document.getElementById('modalSpinAgainBtn').disabled = getActiveItems().length === 0;
+      document.getElementById('modalCloseBtn').focus();
     }
 
     /**************************************************************
@@ -2189,12 +2454,16 @@ Item 3 * 5"></textarea>
     document.getElementById('stopSpinBtn').addEventListener('click', stopSpinImmediately);
 
     document.getElementById('restoreEliminatedBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       getActiveWs().items.forEach(i => (i.active = true));
       saveState();
       renderAll();
     });
 
     document.getElementById('reMaskAllBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       getActiveWs().items.forEach(i => (i.revealed = false));
       saveState();
       renderAll();
@@ -2202,6 +2471,8 @@ Item 3 * 5"></textarea>
 
     // Quick Stage & Header Toggles
     document.getElementById('quickMysteryBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       const ws = getActiveWs();
       ws.mysteryMode = !ws.mysteryMode;
       if (ws.mysteryMode) ws.items.forEach(i => (i.revealed = false));
@@ -2218,6 +2489,8 @@ Item 3 * 5"></textarea>
     });
 
     document.getElementById('stageAutoRemoveBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       const ws = getActiveWs();
       ws.autoRemove = !ws.autoRemove;
       saveState();
@@ -2227,15 +2500,18 @@ Item 3 * 5"></textarea>
     // Add New Entry
     document.getElementById('addItemForm').addEventListener('submit', e => {
       e.preventDefault();
+      if (isSpinning || isAutoRacing) return;
       const nameInput = document.getElementById('newItemName');
       const weightInput = document.getElementById('newItemWeight');
       const name = nameInput.value.trim();
       if (!name) return;
+      if (getActiveWs().items.length >= 1000) { notify('This wheel has reached 1,000 choices. Create another wheel to add more.'); return; }
 
+      rememberEdit();
       getActiveWs().items.push({
         id: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
         name,
-        weight: Math.max(1, parseInt(weightInput.value, 10) || 1),
+        weight: Math.round(clamp(weightInput.value,1,99,1)),
         wins: 0,
         active: true,
         mystery: false,
@@ -2249,6 +2525,7 @@ Item 3 * 5"></textarea>
 
     // Item List Delegation
     document.getElementById('itemsList').addEventListener('click', e => {
+      if (isSpinning || isAutoRacing) return;
       const btn = e.target.closest('button');
       if (!btn) return;
       const id = btn.dataset.id;
@@ -2256,6 +2533,7 @@ Item 3 * 5"></textarea>
       const ws = getActiveWs();
       const item = ws.items.find(i => i.id === id);
       if (!item) return;
+      rememberEdit();
 
       if (action === 'inc') item.weight = Math.min(99, (Number(item.weight) || 1) + 1);
       if (action === 'dec') item.weight = Math.max(1, (Number(item.weight) || 1) - 1);
@@ -2271,19 +2549,24 @@ Item 3 * 5"></textarea>
     });
 
     document.getElementById('itemsList').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       if (e.target.classList.contains('item-name-input')) {
         const item = getActiveWs().items.find(i => i.id === e.target.dataset.id);
         if (item && e.target.value.trim()) {
-          item.name = e.target.value.trim();
+          rememberEdit();
+          item.name = e.target.value.trim().slice(0,300);
           saveState();
           drawWheel();
           renderLeaderboard();
-        }
+          updateButtonsState();
+        } else if (item) e.target.value = item.name;
       }
     });
 
     // Shuffle, Sort, Equalize, Bulk Edit
     document.getElementById('shuffleBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       const items = getActiveWs().items;
       for (let i = items.length - 1; i > 0; i--) {
         const j = Math.floor(cryptoRandom() * (i + 1));
@@ -2294,85 +2577,108 @@ Item 3 * 5"></textarea>
     });
 
     document.getElementById('sortBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       getActiveWs().items.sort((a, b) => a.name.localeCompare(b.name));
       saveState();
       renderAll();
     });
 
     document.getElementById('equalizeBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       getActiveWs().items.forEach(i => (i.weight = 1));
+      getActiveWs().weighted = false;
       saveState();
       renderAll();
     });
 
     document.getElementById('bulkToggleBtn').addEventListener('click', e => {
+      if (isSpinning || isAutoRacing) return;
       const editor = document.getElementById('bulkEditor');
       const list = document.getElementById('itemsList');
       const isOpening = !editor.classList.contains('active');
+      if (isOpening) { renderEntriesList(); document.getElementById('bulkTextarea').focus(); }
       editor.classList.toggle('active', isOpening);
       list.style.display = isOpening ? 'none' : 'flex';
       e.target.classList.toggle('active', isOpening);
     });
 
     document.getElementById('applyBulkBtn').addEventListener('click', () => {
-      const rawLines = document.getElementById('bulkTextarea').value.split('\n');
-      const newItems = [];
-      rawLines.forEach((line, idx) => {
-        let trimmed = line.trim();
-        if (!trimmed) return;
-        let isMys = false;
-        if (trimmed.endsWith('?')) {
-          isMys = true;
-          trimmed = trimmed.slice(0, -1).trim();
-        }
-        const parts = trimmed.split('*');
-        const name = parts[0].trim();
-        const weight = parts[1] ? Math.max(1, parseInt(parts[1].trim(), 10) || 1) : 1;
-        if (name) {
-          newItems.push({
-            id: 'b_' + Date.now() + '_' + idx,
-            name,
-            weight,
-            wins: 0,
-            active: true,
-            mystery: isMys,
-            revealed: false
-          });
-        }
-      });
-      if (newItems.length > 0) {
-        getActiveWs().items = newItems;
-        saveState();
-      }
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
+      const lines = document.getElementById('bulkTextarea').value.split(/\r?\n/).filter(line => line.trim());
+      if (lines.length > 1000) { notify('A wheel supports up to 1,000 entries. Your list has not been changed.'); return; }
+      const ws = getActiveWs();
+      const oldByName = new Map();
+      ws.items.forEach(item => {if (!oldByName.has(item.name)) oldByName.set(item.name,[]); oldByName.get(item.name).push(item);});
+      ws.items = lines.map(line => {
+        let text = line.trim(), mystery = false, weight = 1;
+        if (text.endsWith(' ?')) { mystery=true; text=text.slice(0,-2).trim(); }
+        const match = text.match(/^(.*)\s+\*\s*(\d+)$/);
+        if (match) {text=match[1].trim(); weight=Math.round(clamp(match[2],1,99,1));}
+        const existing = oldByName.get(text)?.shift();
+        return {...(existing || {id:makeId(),wins:0,active:true,revealed:false}),name:text.slice(0,300),weight,mystery};
+      }).filter(item => item.name);
+      if (ws.items.some(item => item.weight > 1)) ws.weighted = true;
       document.getElementById('bulkToggleBtn').click();
-      renderAll();
+      lastWonItemId = null; resetCallout(); saveState(); renderAll();
+      notify('Choices updated.');
     });
 
-    // Panel Tabs Switching
+
+
+        // Panel Tabs Switching
     document.querySelectorAll('.panel-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
         tab.classList.add('active');
+        document.querySelectorAll('.panel-tab').forEach(t => t.setAttribute('aria-selected',String(t === tab)));
         document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
       });
     });
 
     // Leaderboard & History Resets
     document.getElementById('resetScoresBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       getActiveWs().items.forEach(i => (i.wins = 0));
       saveState();
       renderAll();
     });
 
     document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       getActiveWs().history = [];
       saveState();
       renderHistory();
     });
 
+    document.getElementById('resetRaceBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
+      getActiveWs().items.forEach(item => item.wins = 0);
+      lastWonItemId = null;
+      saveState(); renderAll(); resetCallout(); notify('Scores reset. Ready for a new race.');
+    });
+    document.getElementById('raceTargetInput').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
+      getActiveWs().targetScore = Math.round(clamp(e.target.value || 3,1,1000000,3));
+      saveState(); renderAll();
+    });
+
     // Studio Settings Listeners
+    document.getElementById('chanceModeSelect').addEventListener('change',e=>{
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
+      getActiveWs().weighted = e.target.value === 'weighted';
+      lastWonItemId = null; saveState(); renderAll(); resetCallout();
+      notify(getActiveWs().weighted ? 'Custom weights enabled. Bigger slices have higher chances.' : 'Equal chances enabled. Every active choice has the same odds.');
+    });
     document.getElementById('mysteryModeToggle').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       const ws = getActiveWs();
       ws.mysteryMode = e.target.checked;
       if (ws.mysteryMode) ws.items.forEach(i => (i.revealed = false));
@@ -2381,12 +2687,14 @@ Item 3 * 5"></textarea>
     });
 
     document.getElementById('progressiveRevealToggle').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       getActiveWs().progressiveReveal = e.target.checked;
       saveState();
       renderAll();
     });
 
     document.getElementById('rimLedsToggle').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       getActiveWs().rimLeds = e.target.checked;
       saveState();
       drawWheel();
@@ -2406,29 +2714,49 @@ Item 3 * 5"></textarea>
     });
 
     document.getElementById('paletteSelect').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       getActiveWs().palette = e.target.value;
       saveState();
       renderAll();
     });
 
     document.getElementById('spinDurationInput').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       getActiveWs().spinDuration = Math.max(1, Math.min(15, Number(e.target.value) || 4));
+      e.target.value = getActiveWs().spinDuration;
       saveState();
     });
 
+    for (const [id, property, max] of [['spinDurationInput','spinDuration',15],['targetScoreInput','targetScore',1000000],['raceTargetInput','targetScore',1000000]]) {
+      document.getElementById(id).addEventListener('input', e => {
+        if (isSpinning || isAutoRacing || !e.target.value) return;
+        const value = Number(e.target.value);
+        if (!Number.isFinite(value) || value < 1 || value > max) return;
+        getActiveWs()[property] = property === 'targetScore' ? Math.round(value) : value;
+        saveState();
+        if (property === 'targetScore') {
+          document.getElementById(id === 'raceTargetInput' ? 'targetScoreInput' : 'raceTargetInput').value = getActiveWs().targetScore;
+          renderLeaderboard(); updateButtonsState();
+        }
+      });
+    }
+
     document.getElementById('targetScoreInput').addEventListener('change', e => {
-      getActiveWs().targetScore = Math.max(1, Number(e.target.value) || 3);
+      if (isSpinning || isAutoRacing) return;
+      getActiveWs().targetScore = Math.round(clamp(e.target.value,1,1000000,3));
       saveState();
       renderAll();
     });
 
     document.getElementById('autoRemoveToggle').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       getActiveWs().autoRemove = e.target.checked;
       saveState();
       updateButtonsState();
     });
 
     document.getElementById('showModalToggle').addEventListener('change', e => {
+      if (isSpinning || isAutoRacing) return;
       getActiveWs().showModal = e.target.checked;
       saveState();
     });
@@ -2448,6 +2776,7 @@ Item 3 * 5"></textarea>
     });
 
     document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      if (!document.documentElement.requestFullscreen) { notify('Fullscreen is unavailable in this browser.'); return; }
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
       } else {
@@ -2455,34 +2784,34 @@ Item 3 * 5"></textarea>
       }
     });
 
-    document.getElementById('shareBtn').addEventListener('click', () => {
+    document.getElementById('shareBtn').addEventListener('click', async () => {
       const ws = getActiveWs();
-      const payload = btoa(encodeURIComponent(JSON.stringify({
-        name: ws.name,
-        palette: ws.palette,
-        mysteryMode: ws.mysteryMode,
-        items: ws.items
-      })));
-      const shareUrl = `${window.location.origin}${window.location.pathname}#wheel=${payload}`;
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        const btn = document.getElementById('shareBtn');
-        btn.textContent = '✔ Link Copied!';
-        setTimeout(() => (btn.textContent = '🔗 Share'), 2000);
-      });
+      if (location.protocol === 'file:') { notify('Open the hosted website to share a link, or export this wheel from Studio.'); return; }
+      const data = {...ws, items:ws.items.map(({name,weight,active,mystery}) => ({name,weight,active,mystery})),history:[]};
+      const payload = btoa(encodeURIComponent(JSON.stringify(data)));
+      const url = new URL(location.href); url.hash = 'wheel=' + payload;
+      try { await navigator.clipboard.writeText(url.href); notify('Wheel link copied. Anyone with the link can see its entries.'); }
+      catch { prompt('Copy this link to share your wheel:',url.href); }
     });
 
-    // Workspace Rename / Delete / Import / Export
+
+
+        // Workspace Rename / Delete / Import / Export
     document.getElementById('renameWsBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       const ws = getActiveWs();
       const updated = prompt('Rename current wheel workspace:', ws.name);
       if (updated && updated.trim()) {
         ws.name = updated.trim();
         saveState();
-        renderWorkspaces();
+        renderAll();
       }
     });
 
     document.getElementById('deleteWsBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      rememberEdit();
       if (state.workspaces.length <= 1) {
         alert('You must keep at least one wheel workspace.');
         return;
@@ -2490,110 +2819,133 @@ Item 3 * 5"></textarea>
       if (confirm(`Delete workspace "${getActiveWs().name}"?`)) {
         state.workspaces = state.workspaces.filter(w => w.id !== state.activeWorkspaceId);
         state.activeWorkspaceId = state.workspaces[0].id;
+        lastWonItemId = null; resetCallout();
         saveState();
         renderAll();
       }
     });
 
-    document.getElementById('exportJsonBtn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `picker-studio-backup-${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-    });
-
-    document.getElementById('exportCsvBtn').addEventListener('click', () => {
-      const ws = getActiveWs();
-      const rows = [['Name', 'Weight', 'Wins', 'Active', 'Mystery']];
-      ws.items.forEach(i => rows.push([`"${i.name.replace(/"/g, '""')}"`, i.weight, i.wins, i.active, Boolean(i.mystery)]));
-      const csv = rows.map(r => r.join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${ws.name.toLowerCase().replace(/\s+/g, '-')}.csv`;
-      a.click();
-    });
-
-    document.getElementById('importFileInput').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const content = ev.target.result;
-        try {
-          if (file.name.endsWith('.json')) {
-            const parsed = JSON.parse(content);
-            if (parsed.workspaces) {
-              state = { ...state, ...parsed };
-              saveState();
-              renderAll();
-              return;
-            }
-          }
-          const lines = content.split(/\r?\n/).filter(Boolean);
-          const importedItems = [];
-          lines.forEach((line, idx) => {
-            if (idx === 0 && line.toLowerCase().startsWith('name,')) return;
-            const cols = line.split(',');
-            const name = cols[0].replace(/^"|"$/g, '').trim();
-            const weight = Math.max(1, parseInt(cols[1], 10) || 1);
-            const wins = Math.max(0, parseInt(cols[2], 10) || 0);
-            if (name) {
-              importedItems.push({
-                id: 'imp_' + Date.now() + '_' + idx,
-                name,
-                weight,
-                wins,
-                active: true,
-                mystery: false,
-                revealed: false
-              });
-            }
-          });
-          if (importedItems.length > 0) {
-            getActiveWs().items = importedItems;
-            saveState();
-            renderAll();
-          }
-        } catch (err) {
-          alert('Could not parse imported file.');
+    function downloadFile(content, type, filename) {
+      const url = URL.createObjectURL(new Blob([content],{type}));
+      const a = document.createElement('a'); a.href=url; a.download=filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url),1000);
+    }
+    function csvEscape(value) { return '"' + String(value).replace(/"/g,'""') + '"'; }
+    function parseCsv(text) {
+      const rows=[]; let row=[], field='', quoted=false;
+      text = text.replace(/^\uFEFF/,'');
+      for (let i=0; i<text.length; i++) {
+        const char=text[i];
+        if (quoted) {
+          if (char==='"' && text[i+1]==='"') {field+='"'; i++;}
+          else if (char==='"') quoted=false;
+          else field+=char;
+        } else if (char==='"' && !field) quoted=true;
+        else if (char===',') {row.push(field);field='';}
+        else if (char==='\n' || char==='\r') {if (char==='\r' && text[i+1]==='\n') i++;row.push(field);rows.push(row);row=[];field='';}
+        else field+=char;
+      }
+      if (quoted) throw new Error('A quoted CSV field was not closed.');
+      if (field || row.length) {row.push(field);rows.push(row);}
+      return rows.filter(r=>r.some(v=>v.trim()));
+    }
+    function importContent(text, filename) {
+      if (/\.json$/i.test(filename)) {
+        const data=JSON.parse(text);
+        if (Array.isArray(data.workspaces)) {
+          // Import as additional wheels, so existing workspaces are preserved.
+          const imported=normalizeState(data);
+          state.workspaces.push(...imported.workspaces);
+          state.activeWorkspaceId=imported.activeWorkspaceId;
+        } else {
+          const ws=normalizeWorkspace(Array.isArray(data) ? {name:'Imported wheel',items:data} : data);
+          state.workspaces.push(ws);state.activeWorkspaceId=ws.id;
         }
-      };
-      reader.readAsText(file);
+      } else {
+        const rows=/\.csv$/i.test(filename) ? parseCsv(text) : text.split(/\r?\n/).filter(s=>s.trim()).map(s=>[s]);
+        if (rows[0]?.[0].trim().toLowerCase()==='name' && rows[0]?.[1]?.trim().toLowerCase()==='weight') rows.shift();
+        const items=rows.map(cols=>({name:cols[0],weight:cols[1] || 1,wins:cols[2] || 0,active:cols[3]?.trim().toLowerCase()!=='false',mystery:cols[4]?.trim().toLowerCase()==='true'}));
+        if (!items.length) throw new Error('The file has no entries.');
+        const ws=normalizeWorkspace({name:filename.replace(/\.[^.]+$/,'') || 'Imported wheel',items});
+        if (!ws.items.length) throw new Error('The file has no valid entries.');
+        state.workspaces.push(ws);state.activeWorkspaceId=ws.id;
+      }
+      lastWonItemId=null;currentAngle=0;resetCallout();saveState();renderAll();
+    }
+    document.getElementById('exportJsonBtn').addEventListener('click', () => {
+      downloadFile(JSON.stringify(state,null,2),'application/json','picker-studio-backup.json');
     });
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      const ws=getActiveWs();
+      const rows=[['Name','Weight','Wins','Active','Mystery'],...ws.items.map(i=>[i.name,i.weight,i.wins,i.active,i.mystery])];
+      downloadFile('\uFEFF'+rows.map(r=>r.map(csvEscape).join(',')).join('\r\n'),'text/csv;charset=utf-8','picker-studio-wheel.csv');
+    });
+    document.getElementById('importBtn').addEventListener('click', () => {
+      if (!isSpinning && !isAutoRacing) document.getElementById('importFileInput').click();
+    });
+    document.getElementById('importFileInput').addEventListener('change', async e => {
+      const file=e.target.files[0];
+      if (!file || isSpinning || isAutoRacing) return;
+      try {
+        if (file.size>2000000) throw new Error('Please choose a file smaller than 2 MB.');
+        const text=await file.text();
+        if (isSpinning || isAutoRacing) {notify('Pause the wheel before importing.');return;}
+        importContent(text,file.name);notify('Imported as new wheels. Your existing choices are saved.');
+      } catch (err) {notify('Import failed: '+err.message);}
+      finally {e.target.value='';}
+    });
+
+
 
     // Modal Controls
     document.getElementById('modalCloseBtn').addEventListener('click', () => {
-      document.getElementById('winnerModal').classList.remove('open');
+      closeWinnerModal();
     });
 
     document.getElementById('modalSpinAgainBtn').addEventListener('click', () => {
-      document.getElementById('winnerModal').classList.remove('open');
+      closeWinnerModal();
       triggerSpin();
     });
 
     document.getElementById('modalEliminateBtn').addEventListener('click', () => {
+      rememberEdit();
       const item = getActiveWs().items.find(i => i.id === lastWonItemId);
       if (item) item.active = false;
       saveState();
       renderAll();
-      document.getElementById('winnerModal').classList.remove('open');
+      closeWinnerModal();
     });
 
     // Global Keyboard Shortcuts
     window.addEventListener('keydown', e => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key.toLowerCase()==='z' && !['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)) {e.preventDefault();document.getElementById('undoBtn').click();}
+        return;
+      }
+      if (e.altKey || e.repeat) return;
       const tag = document.activeElement ? document.activeElement.tagName : '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
         if (e.key === 'Escape') document.activeElement.blur();
         return;
       }
 
+      const openModal = document.getElementById('winnerModal');
+      if (openModal.classList.contains('open')) {
+        if (e.key === 'Escape' || (e.code === 'Space' && tag !== 'BUTTON')) {e.preventDefault();closeWinnerModal();}
+        if (e.key === 'Tab') {
+          const buttons = [...openModal.querySelectorAll('button:not(:disabled)')];
+          if (e.shiftKey && document.activeElement === buttons[0]) {e.preventDefault();buttons.at(-1).focus();}
+          else if (!e.shiftKey && document.activeElement === buttons.at(-1)) {e.preventDefault();buttons[0].focus();}
+        }
+        return;
+      }
+      if (tag === 'BUTTON' && (e.key === 'Enter' || e.code === 'Space')) return;
       if (e.code === 'Space') {
         e.preventDefault();
         const modal = document.getElementById('winnerModal');
         if (modal.classList.contains('open')) {
-          modal.classList.remove('open');
+          closeWinnerModal();
         } else {
           triggerSpin();
         }
@@ -2608,15 +2960,60 @@ Item 3 * 5"></textarea>
       } else if (e.key.toLowerCase() === 'f') {
         document.getElementById('fullscreenBtn').click();
       } else if (e.key === 'Escape') {
-        document.getElementById('winnerModal').classList.remove('open');
+        closeWinnerModal();
       }
     });
 
     window.addEventListener('resize', drawWheel);
 
+    function resetCallout() {
+      const el=document.getElementById('livePointerCallout');
+      el.classList.remove('mystery-active');
+      el.textContent=getActiveItems().length ? 'Ready when you are. Press Space or give it a spin.' : 'Add or enable a choice to get started.';
+    }
+    document.getElementById('undoBtn').addEventListener('click', () => {
+      if (isSpinning || isAutoRacing) return;
+      const index=undoStack.findLastIndex(e=>e.id===getActiveWs().id);
+      if (index<0) return;
+      const edit=undoStack.splice(index,1)[0];
+      state.workspaces[state.workspaces.findIndex(w=>w.id===edit.id)]=JSON.parse(edit.value);
+      lastWonItemId=null;resetCallout();saveState();renderAll();notify('Last edit undone.');
+    });
+    const templates={food:['Pizza','Sushi','Homemade pasta','Burgers','Thai food','Something new'],weekend:['Movie night','A long walk','Game night','Try a new café','A day trip','Stay in & recharge'],focus:['Stretch for 5 minutes','Read a chapter','Make some tea','Take a short walk','Sketch something','Listen to a song'],yesno:['Yes','No'],blank:[]};
+    document.getElementById('templateSelect').addEventListener('change',e=>{
+      if (isSpinning || isAutoRacing || !Object.hasOwn(templates,e.target.value)) return;
+      const names={food:'What’s for dinner?',weekend:'Weekend plans',focus:'A productive break',yesno:'Yes or no?',blank:'Untitled wheel'};
+      const ws=normalizeWorkspace({name:names[e.target.value],items:templates[e.target.value]});
+      state.workspaces.push(ws);state.activeWorkspaceId=ws.id;lastWonItemId=null;currentAngle=0;
+      document.getElementById('bulkEditor').classList.remove('active');document.getElementById('itemsList').style.display='flex';
+      resetCallout();saveState();renderAll();notify('New wheel ready. Make it yours.');
+    });
+    document.getElementById('winnerModal').addEventListener('click',e=>{if(e.target.id==='winnerModal')closeWinnerModal();});
+    document.querySelectorAll('.panel-tab').forEach(tab=>{
+      tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(tab.classList.contains('active')));
+      tab.id='panel-'+tab.dataset.tab;tab.setAttribute('aria-controls','tab-'+tab.dataset.tab);
+      const pane=document.getElementById('tab-'+tab.dataset.tab);pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby',tab.id);
+    });
+    document.querySelector('.panel-tabs').addEventListener('keydown',e=>{
+      if (!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+      const tabs=[...document.querySelectorAll('.panel-tab')];const index=tabs.indexOf(document.activeElement);if(index<0)return;
+      e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      tabs[next].click();tabs[next].focus();
+    });
+    // Associate the existing settings text with its input for assistive technology.
+    document.querySelectorAll('.setting-row').forEach(row=>{
+      const control=row.querySelector('input,select');const label=row.querySelector('.setting-label');
+      if(control && label){label.id=control.id+'-label';control.setAttribute('aria-labelledby',label.id);}
+    });
+    document.getElementById('bulkTextarea').setAttribute('aria-label','Bulk entries, one per line');
+    document.getElementById('tab-entries').insertAdjacentHTML('beforeend','<p class="entry-note">Every choice has a chance. Increase its weight to give it a bigger slice.<br>◇ Hide a choice · Ⅱ Pause a choice · Edits are saved automatically.</p>');
+    if (window.ResizeObserver) new ResizeObserver(drawWheel).observe(canvas);
+
     // Boot Application
     loadState();
+    resetCallout();
     renderAll();
+    saveState();
   </script>
 </body>
 </html>
