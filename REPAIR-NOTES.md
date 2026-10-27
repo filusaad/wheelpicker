@@ -37,6 +37,9 @@ instead of HTML entities, allowing names to break rendered input attributes.
 - CSV imports correctly handle quoted commas, doubled quotes, multiline names,
   UTF-8 BOMs, weights, scores, active flags, and mystery flags.
 - Unicode sharing, clipboard fallback, download URL cleanup, and useful errors.
+- Restored the existing `favicon.png` through a project-relative icon link and
+  touch icon link, with a version query to refresh cached icons. Added `.nojekyll`
+  so GitHub Pages serves this static site directly.
 - Undo for entry edits, starter wheels, clear saved-state feedback, and empty states.
 - Bulk drafts stay with their own wheel. Applying an unchanged list preserves
   equal-chance mode, duplicate entries, and literal names ending in `* 3` or `?`.
@@ -55,6 +58,7 @@ mystery reveal, undo, equal/weighted tickets, rejection sampling, matching anima
 landings, bulk draft isolation, literal names, and reduced motion. Browser checks cover actual interactions
 and desktop/phone layouts.
 
-The original supplied Gemini file remains untouched. The old local `index.html`
-was preserved as `index.original.html`. The proposed GitHub changes are on a
-separate branch; merging the pull request updates the existing GitHub Pages site.
+The original supplied Gemini file remains untouched in the local workspace. The
+old local `index.html` was preserved as `index.original.html`. Release 3.1.0 is
+prepared through pull request #1 for publication from `main` at
+https://filusaad.github.io/wheelpicker/. See `CHANGELOG.md` for the update summary.
