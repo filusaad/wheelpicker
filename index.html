@@ -1241,19 +1241,21 @@
     }
     [data-theme="dark"] {
       color-scheme:dark;
-      --bg-base:#191a1e;--bg-surface:#222329;--bg-elevated:#2a2c33;--bg-card:#32343c;--bg-glass:rgba(25,26,30,.97);
-      --text-main:#eff0f4;--text-muted:#adb0bc;--text-dim:#969ba9;--border:#363841;--border-strong:#494c58;
-      --accent:#b6aad6;--accent-hover:#c9bee4;--border-focus:#b6aad6;--accent-glow:rgba(182,170,214,.11);--mystery:#c0a1d4;
-      --shadow-lg:0 8px 24px rgba(0,0,0,.12);
+      --bg-base:#101010;--bg-surface:#171717;--bg-elevated:#222222;--bg-card:#292929;--bg-glass:rgba(20,20,20,.98);
+      --text-main:#f5f5f5;--text-muted:#b5b5b5;--text-dim:#919191;--border:#2d2d2d;--border-strong:#414141;
+      --accent:#d4ff66;--accent-hover:#e2ff96;--border-focus:#d4ff66;--accent-glow:rgba(212,255,102,.10);--mystery:#b27ce8;
+      --shadow-lg:0 8px 24px rgba(0,0,0,.14);
     }
-    [data-theme="dark"] .brand-logo {background:#b6aad6;color:#25212f}
-    [data-theme="dark"] .primary-btn,[data-theme="dark"] #autoRaceBtn {background:#b6aad6;color:#25212f}
-    [data-theme="dark"] .primary-btn:hover:not(:disabled),[data-theme="dark"] #autoRaceBtn:hover:not(:disabled){background:#c9bee4}
-    [data-theme="dark"] .hub-btn {background:#292a31;color:#efebf7;border-color:#41404b;box-shadow:0 3px 12px rgba(0,0,0,.20)}
+    [data-theme="dark"] header {background:#141414}
+    [data-theme="dark"] .wheel-stage {background:#141414}
+    [data-theme="dark"] .brand-logo {background:#d4ff66;color:#131313}
+    [data-theme="dark"] .primary-btn,[data-theme="dark"] #autoRaceBtn {background:#d4ff66;color:#131313}
+    [data-theme="dark"] .primary-btn:hover:not(:disabled),[data-theme="dark"] #autoRaceBtn:hover:not(:disabled){background:#e2ff96}
+    [data-theme="dark"] .hub-btn {background:#d4ff66;color:#131313;border-color:#242424;box-shadow:0 3px 12px rgba(0,0,0,.20)}
     [data-theme="dark"] canvas#wheelCanvas {filter:drop-shadow(0 4px 10px rgba(0,0,0,.13))}
-    [data-theme="dark"] .item-row.mystery-row {border-color:#655273;background:var(--bg-elevated)}
-    [data-theme="dark"] .icon-btn.active-pill {background:rgba(192,161,212,.10);border-color:#766187;color:#d2b9df;box-shadow:none}
-    [data-theme="dark"] .score-row.latest-winner {border-color:#b6aad6;box-shadow:inset 3px 0 #b6aad6}
+    [data-theme="dark"] .item-row.mystery-row {border-color:#5a416f;background:var(--bg-elevated)}
+    [data-theme="dark"] .icon-btn.active-pill {background:rgba(212,255,102,.08);border-color:#6b7a42;color:#d4ff66;box-shadow:none}
+    [data-theme="dark"] .score-row.latest-winner {border-color:#d4ff66;box-shadow:inset 3px 0 #d4ff66}
     @media(prefers-reduced-motion:reduce) {*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -1899,9 +1901,8 @@ Item 3 * 5"></textarea>
     function getPalette(name) {
       const palette = PALETTES[name] || PALETTES.cyber;
       if (state.theme !== 'dark') return palette;
-      if (name === 'cyber' || !PALETTES[name]) return ['#be8d85','#c5ad79','#7eb0a6','#8ba6c7','#a596c3','#c397ad','#a5b585','#bca082'];
-      // Tone down other selected palettes against neutral dark surfaces as well.
-      return palette.map(color=>'#'+[0,2,4].map(offset=>Math.round(parseInt(color.slice(offset+1,offset+3),16)*.68+132*.32).toString(16).padStart(2,'0')).join(''));
+      if (name === 'cyber' || !PALETTES[name]) return ['#d4ff66','#ffb05d','#b27ce8','#69d6cb','#ff7895','#f4d35e','#7cacee','#f59166'];
+      return palette;
     }
     function colorLuminance(color) {
       let hex = color.replace('#','');
@@ -1911,10 +1912,12 @@ Item 3 * 5"></textarea>
     }
     function wheelLabelColor(color) {
       const luminance = colorLuminance(color);
-      const ink = colorLuminance('#13213a');
+      const darkInk = state.theme === 'dark' ? '#101010' : '#13213a';
+      const ink = colorLuminance(darkInk);
       const inkContrast = (luminance+.05)/(ink+.05);
       const whiteContrast = 1.05/(luminance+.05);
-      return inkContrast >= whiteContrast ? '#13213a' : '#ffffff';
+      if (inkContrast >= whiteContrast) return inkContrast >= 4.5 ? darkInk : '#000000';
+      return whiteContrast >= 4.5 ? '#ffffff' : '#000000';
     }
     function wrapWheelLabel(text, maxWidth, maxLines) {
       let remaining = String(text).trim();
@@ -1974,10 +1977,10 @@ Item 3 * 5"></textarea>
       // Outer Casino Bezel Ring
       ctx.beginPath();
       ctx.arc(cx, cy, radius + 14, 0, Math.PI * 2);
-      ctx.fillStyle = state.theme === 'dark' ? '#3b3d46' : '#ffffff';
+      ctx.fillStyle = state.theme === 'dark' ? '#252525' : '#ffffff';
       ctx.fill();
       ctx.lineWidth = 3;
-      ctx.strokeStyle = state.theme === 'dark' ? (ws.mysteryMode ? '#84708f' : '#565963') : (ws.mysteryMode ? '#c2a3ef' : '#d3def2');
+      ctx.strokeStyle = state.theme === 'dark' ? (ws.mysteryMode ? '#80609b' : '#414141') : (ws.mysteryMode ? '#c2a3ef' : '#d3def2');
       ctx.stroke();
 
       // 24 Casino Chasing Rim LEDs
@@ -1994,10 +1997,10 @@ Item 3 * 5"></textarea>
           ctx.beginPath();
           ctx.arc(lx, ly, 2.8, 0, Math.PI * 2);
           if (isLit) {
-            ctx.fillStyle = state.theme === 'dark' ? (ws.mysteryMode ? '#b19bbf' : '#a39ab4') : (ws.mysteryMode ? '#ad7cde' : '#8eacf0');
+            ctx.fillStyle = state.theme === 'dark' ? (ws.mysteryMode ? '#b27ce8' : '#b6d571') : (ws.mysteryMode ? '#ad7cde' : '#8eacf0');
             ctx.shadowBlur = 0;
           } else {
-            ctx.fillStyle = state.theme === 'dark' ? '#646671' : '#e2e9f7';
+            ctx.fillStyle = state.theme === 'dark' ? '#505050' : '#e2e9f7';
             ctx.shadowBlur = 0;
           }
           ctx.fill();
@@ -2010,7 +2013,7 @@ Item 3 * 5"></textarea>
       if (slices.length === 0) {
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.fillStyle = state.theme === 'dark' ? '#2a2c33' : '#edf2fc';
+        ctx.fillStyle = state.theme === 'dark' ? '#222222' : '#edf2fc';
         ctx.fill();
         ctx.fillStyle = state.theme === 'dark' ? '#f6f9ff' : '#1b2b4a';
         ctx.font = '600 16px Inter, sans-serif';
@@ -2040,13 +2043,13 @@ Item 3 * 5"></textarea>
         if (isLastWinner) {
           ctx.save();
           ctx.lineWidth = 4.5;
-          ctx.strokeStyle = state.theme === 'dark' ? '#d6c7f0' : '#4f63e6';
+          ctx.strokeStyle = state.theme === 'dark' ? '#d4ff66' : '#4f63e6';
           ctx.shadowBlur = 0;
           ctx.stroke();
           ctx.restore();
         } else {
           ctx.lineWidth = 3;
-          ctx.strokeStyle = state.theme === 'dark' ? '#292a30' : '#ffffff';
+          ctx.strokeStyle = state.theme === 'dark' ? '#111111' : '#ffffff';
           ctx.stroke();
         }
 
@@ -2074,10 +2077,10 @@ Item 3 * 5"></textarea>
         const pegY = cy + Math.sin(start) * (radius + 1);
         ctx.beginPath();
         ctx.arc(pegX, pegY, 4.2, 0, Math.PI * 2);
-        ctx.fillStyle = state.theme === 'dark' ? '#b9b7c3' : '#ffffff';
+        ctx.fillStyle = state.theme === 'dark' ? '#b0b0b0' : '#ffffff';
         ctx.fill();
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = state.theme === 'dark' ? '#4e505b' : '#b4c4e2';
+        ctx.strokeStyle = state.theme === 'dark' ? '#333333' : '#b4c4e2';
         ctx.stroke();
       });
 
@@ -2091,17 +2094,17 @@ Item 3 * 5"></textarea>
       ctx.lineTo(9, -13);
       ctx.lineTo(9, 13);
       ctx.closePath();
-      ctx.fillStyle = state.theme === 'dark' ? '#b6aad6' : '#4f63e6';
+      ctx.fillStyle = state.theme === 'dark' ? '#ff823d' : '#4f63e6';
       ctx.shadowColor = 'rgba(55,78,140,0.16)';
       ctx.shadowBlur = 5;
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = state.theme === 'dark' ? '#55515f' : '#ffffff';
+      ctx.strokeStyle = state.theme === 'dark' ? '#252525' : '#ffffff';
       ctx.stroke();
 
       ctx.beginPath();
       ctx.arc(4, 0, 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = state.theme === 'dark' ? '#ded8e9' : '#ffffff';
+      ctx.fillStyle = state.theme === 'dark' ? '#eeeeee' : '#ffffff';
       ctx.fill();
       ctx.restore();
 
@@ -2636,7 +2639,7 @@ Item 3 * 5"></textarea>
       document.getElementById('muteBtn').setAttribute('aria-label',state.muted ? 'Unmute audio' : 'Mute audio');
       document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀';
       document.getElementById('themeBtn').setAttribute('aria-label',state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',state.theme === 'dark' ? '#191a1e' : '#f5f7ff');
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',state.theme === 'dark' ? '#101010' : '#f5f7ff');
     }
 
     function renderAll() {

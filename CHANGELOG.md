@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.3.2 — 2026-10-27
+
+- Restyled dark mode from the supplied dashboard references: near-black neutral
+  panels, white typography, lime controls, an orange pointer, and vivid chart colors.
+- Coordinated the wheel, center button, rim, score bars, and entry dots without
+  adding content or changing the compact wheel-first layout.
+- Preserved the bright light theme and saved preferences. Verified wheel-label
+  contrast of at least 4.5:1 across all six palettes in both themes.
+- All 23 regression checks pass.
+
 ## 3.3.1 — 2026-10-27
 
 - Reworked dark mode with neutral charcoal surfaces, muted lavender controls,
