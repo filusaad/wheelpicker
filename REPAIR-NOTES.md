@@ -1,0 +1,54 @@
+# Picker Studio repair
+
+Open `index.html` directly in a browser, or preview it with `node scripts/serve.cjs`.
+The deployed application is still a single self-contained HTML file. It needs no
+build step, account, backend, external JavaScript, or downloaded fonts.
+
+## What broke
+
+The Gemini file and GitHub's original `main` both had a JavaScript syntax error in
+`escapeHtml`: its apostrophe replacement was written as three single quotes.
+Because the browser could not parse the inline script, the entire application
+failed to initialize. Its other replacements also returned literal HTML characters
+instead of HTML entities, allowing names to break rendered input attributes.
+
+## Repairs and improvements
+
+- Correct HTML escaping, validated imported data, safe generated identifiers.
+- New wheels default to equal chances. Custom weights are an explicit option;
+  existing saved weighted wheels keep their settings. Slice sizes and displayed
+  percentages use the same effective weights as selection.
+- Outcomes use `crypto.getRandomValues` with rejection sampling to remove modulo
+  bias. Animation lands inside the selected slice; decorative randomness does not
+  choose the winner.
+- A visible **Race to a target** control beside the wheel: enter 7, click
+  **Start race**, and spins repeat until the first entry reaches 7 points.
+  **Pause race** cancels the current spin and pending continuation; **Reset**
+  clears scores. Starting a new race after a target is reached clears scores.
+- Editing, workspace switches, imports, and score resets are locked while a spin
+  or race is in progress, keeping the result consistent with the visible wheel.
+- Paused races cancel their pending timer, preventing stale delayed spins.
+- Automatic migration of `pickerStudioUltraData`, including old names and scores.
+- Validated JSON imports add wheels instead of replacing existing workspaces.
+- CSV imports correctly handle quoted commas, doubled quotes, multiline names,
+  UTF-8 BOMs, weights, scores, active flags, and mystery flags.
+- Unicode sharing, clipboard fallback, download URL cleanup, and useful errors.
+- Undo for entry edits, starter wheels, clear saved-state feedback, and empty states.
+- Responsive light/dark layouts, labelled controls, keyboard tabs, dialog focus
+  management, and support for reduced-motion preferences.
+- Graceful operation if audio or browser storage is unavailable. Unreadable saved
+  data is preserved under a recovery key before the application saves new state.
+
+## Verification
+
+Run `node --test tests/wheel.test.cjs` (Node.js 18+). The suite executes the actual
+inline script in a deterministic DOM/canvas host. The 16 checks cover startup, escaping,
+migration, storage failure, weighted pointer geometry, import validation, CSV and
+Unicode sharing, single-win scoring, race cancellation, a race to exactly seven,
+mystery reveal, undo, equal/weighted tickets, rejection sampling, matching animation
+landings, and reduced motion. Browser checks cover actual interactions
+and desktop/phone layouts.
+
+The original supplied Gemini file remains untouched. The old local `index.html`
+was preserved as `index.original.html`. The proposed GitHub changes are on a
+separate branch; merging the pull request updates the existing GitHub Pages site.
