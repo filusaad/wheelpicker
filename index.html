@@ -1056,6 +1056,31 @@
     .canvas-container {width:min(100%,410px)}
     @media(max-width:960px){.wheel-stage{min-height:0}.control-panel{height:640px}}
     @media(max-width:540px){.race-controls{padding:12px;margin-top:16px}.race-config{gap:6px}.race-goal{font-size:10px}#raceTargetInput{width:50px;font-size:12px}#autoRaceBtn{padding:9px 10px;font-size:11px}#resetRaceBtn{font-size:9px;padding:5px}.race-summary{font-size:9px}.canvas-container{width:min(100%,350px)}}
+    .panel-tabs {grid-template-columns:repeat(3,1fr)}
+    .wheel-race-view {display:grid; grid-template-columns:minmax(0,1fr) 205px; align-items:start; gap:18px; width:100%; margin-top:10px}
+    .wheel-visual {display:flex; flex-direction:column; align-items:center; min-width:0}
+    .live-scoreboard {background:var(--bg-elevated); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; min-width:0; margin-top:15px}
+    .scoreboard-header {display:flex; align-items:center; justify-content:space-between; gap:8px}
+    .scoreboard-header h3 {font-size:15px; font-weight:650; letter-spacing:-.3px}
+    .scoreboard-header .mini-btn {font-size:9px; padding:4px 6px}
+    .scoreboard-caption,.scoreboard-footnote {font-size:10px; color:var(--text-muted); line-height:1.6}
+    .scoreboard-caption {margin:3px 0 12px}
+    .scoreboard-footnote {margin-top:12px; padding-top:9px; border-top:1px solid var(--border)}
+    #leaderboardList {max-height:385px; min-height:0; gap:8px; padding-right:2px; scrollbar-gutter:stable}
+    .score-row {background:var(--bg-surface); border:1px solid var(--border); border-radius:9px; padding:10px; flex-shrink:0}
+    .score-row.latest-winner {border-color:var(--accent); box-shadow:inset 3px 0 var(--accent)}
+    .score-row.paused {opacity:.65}
+    .score-row .lb-top {align-items:center; gap:8px}
+    .score-entry-name {display:flex; align-items:center; gap:7px; min-width:0; font-size:12px; font-weight:500; overflow-wrap:anywhere}
+    .score-entry-name .score-name {min-width:0;white-space:normal}
+    .score-entry-name .color-dot {flex-shrink:0}
+    .score-value {font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; line-height:1.1; text-align:right}
+    .score-value small {font-size:9px; font-weight:500; color:var(--text-muted); letter-spacing:0}
+    .score-row .lb-progress-track {height:4px; margin-top:9px; background:var(--bg-elevated)}
+    .score-paused {display:block; font-size:8px; color:var(--text-muted); margin-top:2px}
+    @media(min-width:1101px) and (max-width:1280px) {.wheel-race-view{grid-template-columns:minmax(0,1fr) 170px;gap:10px}.live-scoreboard{padding:10px}.score-value{font-size:19px}.score-entry-name{font-size:11px}.scoreboard-header h3{font-size:13px}}
+    @media(max-width:1100px){main{grid-template-columns:minmax(0,1fr)}.wheel-stage{min-height:0}.control-panel{height:640px}}
+    @media(max-width:620px){.wheel-race-view{grid-template-columns:minmax(0,1fr);gap:6px}.live-scoreboard{order:-1;width:100%;margin-top:0;padding:12px}#leaderboardList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:178px;gap:7px}.score-row{padding:9px}.score-value{font-size:19px}.score-entry-name{font-size:11px}.scoreboard-caption{margin-bottom:8px}.scoreboard-footnote{margin-top:8px;padding-top:7px;font-size:9px}}
     @media(prefers-reduced-motion:reduce) {*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -1118,6 +1143,8 @@
         <progress id="raceProgress" value="0" max="3" aria-label="Leading entry’s progress toward the race target"></progress>
       </div>
       <div class="wheel-heading"><h2 id="wheelTitle">Main Wheel</h2><span>YOUR NEXT MOVE, RANDOMLY SELECTED</span></div>
+      <div class="wheel-race-view">
+      <div class="wheel-visual">
       <div class="canvas-container">
         <canvas id="wheelCanvas" role="img" aria-label="Decision wheel. Use the Spin wheel button to pick an entry."></canvas>
         <button class="hub-btn" id="hubSpinBtn" title="Press Space to Spin">
@@ -1136,13 +1163,20 @@
         <button class="icon-btn" id="restoreEliminatedBtn" style="display:none;">♻ Restore Eliminated</button>
         <button class="icon-btn" id="reMaskAllBtn" style="display:none;">🕵️ Re-Mask All</button>
       </div>
+      </div>
+      <aside class="live-scoreboard" aria-labelledby="liveScoresTitle">
+        <div class="scoreboard-header"><h3 id="liveScoresTitle">Live scores</h3><button class="mini-btn" id="resetScoresBtn" title="Reset all scores">↺ Reset</button></div>
+        <p class="scoreboard-caption" id="targetGoalHint">First to 3 points wins</p>
+        <div class="items-list" id="leaderboardList" aria-label="Entry scores"></div>
+        <p class="scoreboard-footnote">Updates after every spin.</p>
+      </aside>
+      </div>
     </section>
 
     <!-- RIGHT: Studio Control Panel -->
     <aside class="control-panel" aria-label="Wheel editor">
       <div class="panel-tabs" role="tablist" aria-label="Wheel controls">
         <button class="panel-tab active" data-tab="entries">Entries</button>
-        <button class="panel-tab" data-tab="leaderboard">Leaderboard</button>
         <button class="panel-tab" data-tab="history">History</button>
         <button class="panel-tab" data-tab="settings">Studio</button>
       </div>
@@ -1178,15 +1212,6 @@ Secret Prize * 2 ?
 Item 3 * 5"></textarea>
           <button class="primary-btn" id="applyBulkBtn">✔ Apply Bulk List</button>
         </div>
-      </div>
-
-      <!-- TAB 2: Leaderboard -->
-      <div class="tab-pane" id="tab-leaderboard">
-        <div class="entries-toolbar">
-          <span class="setting-sub" id="targetGoalHint">First to target score wins the race</span>
-          <button class="mini-btn" id="resetScoresBtn">🗑 Reset Scores</button>
-        </div>
-        <div class="items-list" id="leaderboardList"></div>
       </div>
 
       <!-- TAB 3: History -->
@@ -2339,11 +2364,15 @@ Item 3 * 5"></textarea>
       const ws = getActiveWs();
       const palette = PALETTES[ws.palette] || PALETTES.cyber;
       const target = Math.max(1, Number(ws.targetScore) || 3);
-      document.getElementById('targetGoalHint').textContent = `Race Goal: First to ${target} wins`;
+      document.getElementById('targetGoalHint').textContent = `First to ${target} points wins`;
 
       const sorted = [...ws.items].sort((a, b) => (b.wins || 0) - (a.wins || 0));
       const container = document.getElementById('leaderboardList');
       container.innerHTML = '';
+      if (!sorted.length) {
+        container.innerHTML = '<div class="empty-state">Add choices to see their scores here.</div>';
+        return;
+      }
 
       sorted.forEach((item, idx) => {
         const wins = Number(item.wins) || 0;
@@ -2352,11 +2381,12 @@ Item 3 * 5"></textarea>
         const displayName = isSliceMasked(item) && wins === 0 ? '??? (Undiscovered Slice)' : item.name;
 
         const card = document.createElement('div');
-        card.className = 'leaderboard-row';
+        card.className = `score-row ${item.id === lastWonItemId ? 'latest-winner' : ''} ${item.active ? '' : 'paused'}`;
+        card.setAttribute('aria-label',`${displayName}: ${wins} of ${target} points${item.active ? '' : ', paused'}`);
         card.innerHTML = `
           <div class="lb-top">
-            <span>${idx === 0 && wins > 0 ? '👑 ' : ''}${escapeHtml(displayName)}</span>
-            <span>${wins} / ${target} Wins</span>
+            <span class="score-entry-name"><span class="color-dot" style="background:${color}"></span><span class="score-name">${idx === 0 && wins > 0 ? '♛ ' : ''}${escapeHtml(displayName)}${item.active ? '' : '<span class="score-paused">Paused</span>'}</span></span>
+            <span class="score-value">${wins}<small> / ${target}</small></span>
           </div>
           <div class="lb-progress-track">
             <div class="lb-progress-fill" style="width:${pct}%; background:${color}"></div>
