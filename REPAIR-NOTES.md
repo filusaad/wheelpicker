@@ -48,6 +48,8 @@ instead of HTML entities, allowing names to break rendered input attributes.
 - Release 3.2 adds a bright white/blue default appearance, colorful flat slices,
   larger upright labels with measured wrapping and contrasting text, and in-page
   new-wheel/rename dialogs. Saved choices and points survive the appearance update.
+- Release 3.3 removes promotional text and prioritizes the wheel above the fold,
+  with compact race controls, visible scores, and optional editor settings.
 - Graceful operation if audio or browser storage is unavailable. Unreadable saved
   data is preserved under a recovery key before the application saves new state.
 

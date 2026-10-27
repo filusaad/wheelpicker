@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.3.0 — 2026-10-27
+
+- Removed the intro slogan, large promotional heading, supporting copy, decorative
+  labels, footer copy, and redundant instructions from the main workspace.
+- Put the wheel immediately below a compact header. The wheel, Spin button, and
+  race target controls fit without scrolling at the checked 709×619 in-app,
+  390×844 phone, and 1440×900 desktop sizes.
+- Moved the compact race controls below the wheel. Scores remain alongside the
+  wheel on larger screens and become compact score cards below it on phones.
+- Collapsed odds and presets into an optional editor menu, moved secondary sound
+  and elimination controls into Studio, and retained accessible labels on the
+  compact header buttons.
+- Retained all 23 passing regression checks and saved data.
+
 ## 3.2.0 — 2026-10-27
 
 - Replaced the dim charcoal/olive appearance with a bright white and blue studio,

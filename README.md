@@ -7,15 +7,19 @@ bright, readable interface.
 
 ## Use the wheel
 
-1. Add choices individually, paste them with **Bulk Edit**, or choose a starter.
-2. Choose **Equal chances** or explicitly enable **Custom weights**.
+1. Add choices individually, paste them with **Bulk Edit**, or choose a preset
+   under **Odds & presets**.
+2. Use **Odds & presets** to choose **Equal chances** or **Custom weights**.
 3. Click **Spin wheel** for one pick, or set a target such as **7** and click
    **Start race**. Spins repeat until the first choice reaches the target.
-4. Follow **Live scores** beside the wheel. On phones, scores appear above it.
+4. Follow **Scores** beside the wheel. On phones, compact score cards appear below it.
 5. Use **Pause race** to stop the loop and **Reset** to clear points.
 
 Mystery mode hides wheel labels until they win. With progressive unmasking on,
 winning entries stay revealed. Mystery mode does not change selection odds.
+
+The main screen opens directly on the wheel. Target race controls sit below it;
+secondary options are in the editor or Studio.
 
 Wheels save automatically in your browser. Studio includes JSON backup/restore
 and CSV import/export. Shared links contain the wheel's choices; they are not a

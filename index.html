@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Picker Studio — A little spin. A clear decision.</title>
+  <title>Picker Studio</title>
   <meta name="description" content="Your personal decision wheel. Add weighted choices, reveal mystery picks, and race to a winner. Free, private, and saved on your device." />
   <meta name="theme-color" content="#f5f7ff" />
   <link rel="icon" type="image/png" href="./favicon.png?v=3.1" />
@@ -1168,6 +1168,77 @@
     .name-dialog label {display:block;font-size:13px;font-weight:600;margin-bottom:7px}
     .name-dialog .text-input {display:block;width:100%;font-size:15px}
     .name-dialog-actions {display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+    /* Wheel-first workspace. Keep the primary action above the fold. */
+    .sr-only {position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    body {background-image:none}
+    header {padding:9px 20px;gap:14px;flex-wrap:nowrap;min-height:58px}
+    .brand {gap:8px;flex-shrink:0}
+    .brand-logo {width:32px;height:32px;border-radius:9px;font-size:25px}
+    .brand-title {font-size:17px;letter-spacing:-.5px}
+    .save-status {display:block;font-size:10px;line-height:1.2;padding:0;color:var(--text-muted)}
+    .workspace-bar {margin:0;min-width:0;flex:1;flex-basis:auto;order:0;gap:3px;padding:0}
+    .ws-tab {font-size:12px;padding:6px 10px;border-radius:7px}
+    .ws-add-btn {font-size:11px;padding:6px 8px}
+    .header-actions {width:auto;flex-shrink:0;gap:5px}
+    .header-actions .icon-btn {width:32px;height:32px;padding:0;justify-content:center;font-size:14px;border-color:var(--border);background:none;display:inline-flex;align-items:center}
+    #quickMysteryBtn {display:none}
+    main {max-width:1600px;grid-template-columns:minmax(0,1fr) 360px;padding:12px 20px;gap:14px;align-items:start}
+    .wheel-stage {min-height:0;height:auto;padding:14px;gap:8px;box-shadow:none;background-image:none;overflow:visible}
+    .stage-top-bar {gap:12px;flex-wrap:nowrap;align-items:center;min-height:24px}
+    .stage-top-bar h1 {font-size:18px;letter-spacing:-.45px;font-weight:650;line-height:1.3;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+    .stage-top-bar .stage-pills {gap:12px;flex-shrink:0;font-size:11px;color:var(--text-muted);flex-wrap:nowrap}
+    .wheel-race-view {margin:0;grid-template-columns:minmax(0,1fr) 185px;gap:14px;align-items:start}
+    .canvas-container {width:min(100%,460px,calc(100dvh - 240px));height:auto;margin:0 auto;max-width:100%}
+    .wheel-visual {gap:6px}
+    .wheel-visual>.live-callout {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .spin-controls-row {margin:0;gap:7px}
+    #mainSpinBtn {font-size:14px;padding:10px 24px;min-width:140px}
+    .spin-controls-row .icon-btn {font-size:11px;padding:8px}
+    .live-scoreboard {margin:0;padding:12px;border-radius:10px;border-color:var(--border);background:var(--bg-elevated)}
+    .scoreboard-header h2 {font-size:15px;letter-spacing:-.3px;font-weight:650}
+    .scoreboard-caption {font-size:10px;margin:2px 0 9px}
+    #leaderboardList {max-height:min(420px,calc(100dvh - 330px));gap:6px;scrollbar-gutter:auto}
+    .score-row {padding:9px}
+    .score-entry-name {font-size:12px}
+    .score-value {font-size:23px}
+    .race-controls {margin:2px 0 0;padding:10px 12px;border-radius:9px;box-shadow:none;background:var(--bg-elevated);border-color:var(--border)}
+    .race-config {gap:10px;justify-content:center}
+    .race-goal {font-size:13px;white-space:nowrap}
+    #raceTargetInput {font-size:14px;width:64px;padding:4px 5px;margin:0 5px;background:var(--bg-surface)}
+    #autoRaceBtn {font-size:13px;padding:9px 14px}
+    .control-panel {height:calc(100dvh - 84px);min-height:360px;max-height:760px;box-shadow:none}
+    .panel-tabs {padding:0 10px;gap:4px}
+    .panel-tab {font-size:13px;padding:12px 0 10px}
+    .tab-pane {padding:14px;gap:12px}
+    .editor-heading h2 {font-size:17px;letter-spacing:-.3px}
+    .entry-options {font-size:12px;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:9px}
+    .entry-options summary {cursor:pointer;width:fit-content;font-weight:550}
+    .entry-options[open] summary {margin-bottom:10px}
+    .entry-options .chance-row {padding:10px;font-size:12px;margin-bottom:8px}
+    .entry-options .template-row {padding:10px;border-style:solid;font-size:12px}
+    .entry-options .select-input {font-size:11px;max-width:165px}
+    .item-row {padding:8px 7px;gap:6px}
+    .item-name-input {font-size:13px}
+    .row-action-btn {width:24px;font-size:13px}
+    .odds-badge {font-size:10px}
+    .mini-btn {font-size:10px;padding:6px 7px}
+    .entries-toolbar {gap:6px}
+    @media(max-width:1100px){main{grid-template-columns:minmax(0,1fr)}.control-panel{height:540px;max-height:none}.wheel-race-view{grid-template-columns:minmax(0,1fr) 185px}}
+    @media(max-width:620px){
+      header{padding:9px 12px;flex-wrap:wrap;gap:8px 12px;min-height:0}
+      .brand-title{font-size:16px}.brand-logo{width:30px;height:30px;font-size:24px}
+      .header-actions{margin-left:auto;gap:5px}.header-actions .icon-btn{display:inline-flex;width:30px;height:30px;font-size:13px;padding:0}
+      #fullscreenBtn{display:none}.workspace-bar{flex-basis:100%;order:3;max-width:100%;padding-top:2px}
+      main{padding:8px 10px;gap:12px}.wheel-stage{padding:10px;gap:7px;border-radius:12px}
+      .stage-top-bar{gap:7px}.stage-top-bar h1{font-size:16px}.stage-top-bar .stage-pills{font-size:9px;gap:7px}
+      .wheel-race-view{grid-template-columns:minmax(0,1fr);gap:9px}.live-scoreboard{order:0;padding:9px 10px;width:100%;margin:0}
+      .canvas-container{width:min(100%,380px,calc(100dvh - 270px))}.hub-btn{width:68px;height:68px;font-size:13px;border-width:6px}
+      .scoreboard-header{margin-bottom:6px}.scoreboard-header h2{font-size:13px}.scoreboard-caption{display:none}
+      #leaderboardList{display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;max-height:none;gap:6px;padding:0 0 2px;min-height:0}
+      .score-row{flex:0 0 135px;min-width:0;padding:8px}.score-entry-name{font-size:11px}.score-value{font-size:20px}.score-row .lb-progress-track{margin-top:6px}
+      .race-controls{padding:8px;margin:0}.race-config{gap:7px;justify-content:center}.race-goal{font-size:12px}#raceTargetInput{width:49px;margin:0 2px;padding:4px}#autoRaceBtn{font-size:12px;padding:9px 11px}
+      #resetRaceBtn{font-size:10px;padding:6px}.control-panel{height:540px;border-radius:12px}.tab-pane{padding:12px}
+    }
     @media(prefers-reduced-motion:reduce) {*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -1180,7 +1251,7 @@
       <div class="brand-logo" aria-hidden="true">◴</div>
       <div>
         <span class="brand-title">Picker Studio</span>
-        <span class="brand-badge">DECISION STUDIO</span>
+        <span class="save-status" id="saveStatus" role="status">Saved</span>
       </div>
     </div>
 
@@ -1188,48 +1259,21 @@
 
     <div class="header-actions">
       <button class="icon-btn" id="quickMysteryBtn" title="Toggle Global Mystery Wheel (H)">🕵️ Mystery: Off</button>
-      <button class="icon-btn" id="shareBtn" title="Copy Shareable Wheel Link">🔗 Share</button>
-      <button class="icon-btn" id="muteBtn" title="Toggle Audio (M)">🔊 Audio</button>
-      <button class="icon-btn" id="themeBtn" title="Switch Dark/Light Mode">🌙 Theme</button>
-      <button class="icon-btn" id="fullscreenBtn" title="Fullscreen Mode (F)">⛶ Zen</button>
+      <button class="icon-btn" id="shareBtn" title="Copy wheel link" aria-label="Copy wheel link">🔗</button>
+      <button class="icon-btn" id="muteBtn" title="Toggle audio (M)" aria-label="Mute audio">🔊</button>
+      <button class="icon-btn" id="themeBtn" title="Switch light/dark theme" aria-label="Switch theme">☀</button>
+      <button class="icon-btn" id="fullscreenBtn" title="Fullscreen (F)" aria-label="Fullscreen">⛶</button>
     </div>
   </header>
 
-  <div class="page-intro">
-    <div><div class="eyebrow">A LITTLE SPIN. A CLEAR DECISION.</div><h1>Leave it to the wheel<span>.</span></h1><p>Big ideas, small choices. Give chance a turn.</p></div>
-    <div class="save-status" id="saveStatus" role="status">● Saved on this device</div>
-  </div>
   <main>
     <!-- LEFT: Wheel Stage -->
     <section class="wheel-stage">
       <div class="stage-top-bar">
-        <div class="stage-pills">
-          <div class="status-pill">
-            <span class="status-dot"></span>
-            <span id="activeCountLabel">0 Active</span>
-          </div>
-          <div class="status-pill" id="raceStatusPill">
-            🎯 Goal: 3 Wins
-          </div>
-          <span class="status-pill" id="chanceModeBadge">Equal chances</span>
-        </div>
-
-        <div class="stage-pills">
-          <button class="icon-btn" id="stageSoundProfileBtn" title="Cycle Sound Profile">🎵 Sound: Mechanical</button>
-          <button class="icon-btn" id="stageAutoRemoveBtn" title="Toggle Auto-Eliminate Winner">⚡ Keep Winner</button>
-        </div>
+        <h1 id="wheelTitle">Main Wheel</h1>
+        <div class="stage-pills"><span id="activeCountLabel">0 entries</span><span id="chanceModeBadge">Equal chances</span></div>
+        <span id="raceStatusPill" class="sr-only"></span>
       </div>
-
-      <div class="race-controls" aria-label="Automatic target race">
-        <div class="race-config">
-          <div><label class="race-label" for="raceTargetInput">RACE TO A TARGET</label><div class="race-goal">First to <input id="raceTargetInput" type="number" min="1" max="1000000" step="1" value="3" aria-label="Race target points" /> points wins</div></div>
-          <button class="primary-btn" id="autoRaceBtn">▷ Start race</button>
-          <button class="mini-btn" id="resetRaceBtn" title="Reset all scores to zero">↺ Reset</button>
-        </div>
-        <div class="race-summary" id="raceLeaderStatus" role="status" aria-live="polite">Spins repeat automatically until an entry reaches your target.</div>
-        <progress id="raceProgress" value="0" max="3" aria-label="Leading entry’s progress toward the race target"></progress>
-      </div>
-      <div class="wheel-heading"><h2 id="wheelTitle">Main Wheel</h2><span>YOUR NEXT MOVE, RANDOMLY SELECTED</span></div>
       <div class="wheel-race-view">
       <div class="wheel-visual">
       <div class="canvas-container">
@@ -1252,11 +1296,19 @@
       </div>
       </div>
       <aside class="live-scoreboard" aria-labelledby="liveScoresTitle">
-        <div class="scoreboard-header"><h3 id="liveScoresTitle">Live scores</h3><button class="mini-btn" id="resetScoresBtn" title="Reset all scores">↺ Reset</button></div>
+        <div class="scoreboard-header"><h2 id="liveScoresTitle">Scores</h2><button class="mini-btn" id="resetScoresBtn" title="Reset all scores">↺ Reset</button></div>
         <p class="scoreboard-caption" id="targetGoalHint">First to 3 points wins</p>
         <div class="items-list" id="leaderboardList" aria-label="Entry scores"></div>
-        <p class="scoreboard-footnote">Updates after every spin.</p>
       </aside>
+      </div>
+      <div class="race-controls" aria-label="Automatic target race">
+        <div class="race-config">
+          <label class="race-goal" for="raceTargetInput">First to <input id="raceTargetInput" type="number" min="1" max="1000000" step="1" value="3" aria-label="Race target points" /> points</label>
+          <button class="primary-btn" id="autoRaceBtn">▷ Start race</button>
+          <button class="mini-btn" id="resetRaceBtn" title="Reset all scores to zero">↺ Reset</button>
+        </div>
+        <div class="sr-only" id="raceLeaderStatus" role="status" aria-live="polite"></div>
+        <progress class="sr-only" id="raceProgress" value="0" max="3" aria-label="Leading entry’s progress toward the race target"></progress>
       </div>
     </section>
 
@@ -1270,9 +1322,11 @@
 
       <!-- TAB 1: Entries -->
       <div class="tab-pane active" id="tab-entries">
-        <div class="editor-heading"><div><h2>Make it your own</h2><p>Add your choices. We’ll take it from here.</p></div><button class="mini-btn" id="undoBtn" title="Undo last edit (Ctrl+Z)" disabled>↶ Undo</button></div>
+        <div class="editor-heading"><h2>Choices</h2><button class="mini-btn" id="undoBtn" title="Undo last edit (Ctrl+Z)" disabled>↶ Undo</button></div>
+        <details class="entry-options"><summary>Odds & presets</summary>
         <div class="chance-row"><label for="chanceModeSelect">Selection odds</label><select id="chanceModeSelect" class="select-input"><option value="equal">Equal chances</option><option value="weighted">Custom weights</option></select><span id="chanceModeHint">Every active entry has the same chance.</span></div>
-        <div class="template-row"><label for="templateSelect">Start with a little inspiration</label><select id="templateSelect" class="select-input"><option value="">Choose a starter…</option><option value="food">What’s for dinner?</option><option value="weekend">Weekend plans</option><option value="focus">A productive break</option><option value="yesno">Yes or no?</option><option value="blank">Empty wheel</option></select></div>
+        <div class="template-row"><label for="templateSelect">Preset</label><select id="templateSelect" class="select-input"><option value="">Choose a preset…</option><option value="food">What’s for dinner?</option><option value="weekend">Weekend plans</option><option value="focus">A productive break</option><option value="yesno">Yes or no?</option><option value="blank">Empty wheel</option></select></div>
+        </details>
         <form class="add-item-row" id="addItemForm">
           <input type="text" class="text-input" id="newItemName" placeholder="Add a choice…" aria-label="New entry name" maxlength="300" required />
           <input type="number" class="text-input weight-input" id="newItemWeight" value="1" min="1" max="99" title="Slice Weight" aria-label="New entry weight" />
@@ -1312,6 +1366,10 @@ Item 3 * 5"></textarea>
 
       <!-- TAB 4: Studio Settings -->
       <div class="tab-pane" id="tab-settings">
+        <div class="stage-pills">
+          <button class="icon-btn" id="stageSoundProfileBtn" title="Cycle sound profile">Sound: Mechanical</button>
+          <button class="icon-btn" id="stageAutoRemoveBtn" title="Toggle auto-eliminate winner">Keep winner</button>
+        </div>
         <!-- Mystery Mode Controls -->
         <div class="setting-group">
           <div class="setting-group-title">🕵️ Mystery Slice Engine</div>
@@ -1446,18 +1504,6 @@ Item 3 * 5"></textarea>
       </div>
     </div>
   </div>
-
-  <footer>
-    <div class="kbd-shortcuts">
-      <span><kbd>Space</kbd> Spin</span>
-      <span><kbd>H</kbd> Mystery Mode</span>
-      <span><kbd>S</kbd> Shuffle</span>
-      <span><kbd>R</kbd> Restore Eliminated</span>
-      <span><kbd>M</kbd> Mute</span>
-      <span><kbd>F</kbd> Fullscreen</span>
-    </div>
-    <div>Made for the undecided. <span class="footer-note">No account. No tracking. Just a fair spin.</span></div>
-  </footer>
 
   <dialog id="workspaceNameDialog" class="name-dialog" aria-labelledby="workspaceDialogTitle">
     <form id="workspaceNameForm">
@@ -1740,7 +1786,8 @@ Item 3 * 5"></textarea>
       try {
         if (storageProtected) throw new Error('Preserving unreadable saved data.');
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        status.textContent = '● Saved on this device';
+        status.textContent = 'Saved';
+        status.setAttribute('title','Saved automatically on this device');
       } catch {
         status.textContent = '○ Not saved — export a backup in Studio';
       }
@@ -2377,7 +2424,7 @@ Item 3 * 5"></textarea>
       document.getElementById('mainSpinBtn').textContent = isSpinning ? 'Spinning…' : '↻ Spin wheel';
 
       document.getElementById('activeCountLabel').textContent =
-        `${activeCount} Active ${eliminatedCount > 0 ? `(${eliminatedCount} Paused)` : 'Slices'}`;
+        `${activeCount} entries${eliminatedCount > 0 ? ` · ${eliminatedCount} paused` : ''}`;
 
       document.getElementById('raceStatusPill').textContent = isAutoRacing
         ? `🏁 Auto-Race (Goal: ${ws.targetScore})`
@@ -2490,7 +2537,7 @@ Item 3 * 5"></textarea>
       const ws = getActiveWs();
       const palette = PALETTES[ws.palette] || PALETTES.cyber;
       const target = Math.max(1, Number(ws.targetScore) || 3);
-      document.getElementById('targetGoalHint').textContent = `First to ${target} points wins`;
+      document.getElementById('targetGoalHint').textContent = `Target: ${target}`;
 
       const sorted = [...ws.items].sort((a, b) => (b.wins || 0) - (a.wins || 0));
       const container = document.getElementById('leaderboardList');
@@ -2563,8 +2610,10 @@ Item 3 * 5"></textarea>
       document.getElementById('autoRemoveToggle').checked = Boolean(ws.autoRemove);
       document.getElementById('showModalToggle').checked = ws.showModal !== false;
 
-      document.getElementById('muteBtn').textContent = state.muted ? '🔇 Muted' : '🔊 Audio';
-      document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙 Dark' : '☀ Light';
+      document.getElementById('muteBtn').textContent = state.muted ? '🔇' : '🔊';
+      document.getElementById('muteBtn').setAttribute('aria-label',state.muted ? 'Unmute audio' : 'Mute audio');
+      document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀';
+      document.getElementById('themeBtn').setAttribute('aria-label',state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content',state.theme === 'dark' ? '#17243c' : '#f5f7ff');
     }
 
@@ -3221,7 +3270,6 @@ Item 3 * 5"></textarea>
       if(control && label){label.id=control.id+'-label';control.setAttribute('aria-labelledby',label.id);}
     });
     document.getElementById('bulkTextarea').setAttribute('aria-label','Bulk entries, one per line');
-    document.getElementById('tab-entries').insertAdjacentHTML('beforeend','<p class="entry-note">Every choice has a chance. Increase its weight to give it a bigger slice.<br>◇ Hide a choice · Ⅱ Pause a choice · Edits are saved automatically.</p>');
     if (window.ResizeObserver) new ResizeObserver(drawWheel).observe(canvas);
 
     // Boot Application
