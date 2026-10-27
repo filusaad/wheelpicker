@@ -1,6 +1,6 @@
 # Picker Studio repair
 
-Open `index.html` directly in a browser, or preview it with `node scripts/serve.cjs`.
+Open `index.html` directly in a browser, or serve it with any static HTTP server.
 The deployed application is still a single self-contained HTML file. It needs no
 build step, account, backend, external JavaScript, or downloaded fonts.
 
@@ -34,6 +34,8 @@ instead of HTML entities, allowing names to break rendered input attributes.
   UTF-8 BOMs, weights, scores, active flags, and mystery flags.
 - Unicode sharing, clipboard fallback, download URL cleanup, and useful errors.
 - Undo for entry edits, starter wheels, clear saved-state feedback, and empty states.
+- Bulk drafts stay with their own wheel. Applying an unchanged list preserves
+  equal-chance mode, duplicate entries, and literal names ending in `* 3` or `?`.
 - Responsive light/dark layouts, labelled controls, keyboard tabs, dialog focus
   management, and support for reduced-motion preferences.
 - Graceful operation if audio or browser storage is unavailable. Unreadable saved
@@ -42,11 +44,11 @@ instead of HTML entities, allowing names to break rendered input attributes.
 ## Verification
 
 Run `node --test tests/wheel.test.cjs` (Node.js 18+). The suite executes the actual
-inline script in a deterministic DOM/canvas host. The 16 checks cover startup, escaping,
+inline script in a deterministic DOM/canvas host. The 19 checks cover startup, escaping,
 migration, storage failure, weighted pointer geometry, import validation, CSV and
 Unicode sharing, single-win scoring, race cancellation, a race to exactly seven,
 mystery reveal, undo, equal/weighted tickets, rejection sampling, matching animation
-landings, and reduced motion. Browser checks cover actual interactions
+landings, bulk draft isolation, literal names, and reduced motion. Browser checks cover actual interactions
 and desktop/phone layouts.
 
 The original supplied Gemini file remains untouched. The old local `index.html`
