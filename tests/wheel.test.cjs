@@ -195,3 +195,27 @@ test('undo restores an edit, and reduced motion avoids celebration animation',()
   assert.equal(a.run('isSpinning'),false);
   assert.equal(a.run('particles.length'),0);
 });
+test('bulk editing in equal mode never re-enables hidden custom weights',()=>{
+  const a=app();
+  a.run(`getActiveWs().items=normalizeWorkspace({items:[{name:'A',weight:2},{name:'B',weight:1}]}).items;getActiveWs().weighted=false;renderAll();document.getElementById('bulkToggleBtn').click()`);
+  assert.equal(a.elements.get('bulkTextarea').value,'A\nB');
+  a.run(`document.getElementById('applyBulkBtn').click()`);
+  assert.equal(a.run('getActiveWs().weighted'),false);
+  assert.equal(a.run('getSliceAngles().every(s=>s.odds==="50.0")'),true);
+});
+test('bulk drafts stay with their own wheel when switching workspaces',()=>{
+  const a=app();
+  a.run(`globalThis.originalWs=getActiveWs();document.getElementById('bulkToggleBtn').click();document.getElementById('bulkTextarea').value='Draft for first wheel';globalThis.secondWs=normalizeWorkspace({name:'Second',items:['Second choice']});state.workspaces.push(secondWs);state.activeWorkspaceId=secondWs.id;renderAll();document.getElementById('bulkToggleBtn').click()`);
+  assert.equal(a.elements.get('bulkTextarea').value,'Second choice');
+  a.run(`document.getElementById('applyBulkBtn').click();state.activeWorkspaceId=originalWs.id;renderAll();document.getElementById('bulkToggleBtn').click()`);
+  assert.equal(a.elements.get('bulkTextarea').value,'Draft for first wheel');
+  assert.equal(a.run('secondWs.items[0].name'),'Second choice');
+  assert.equal(a.run('originalWs.items[0].name'),'Deep Work Sprint');
+});
+test('unchanged bulk lines preserve names containing the optional suffix syntax',()=>{
+  const a=app();
+  a.run(`getActiveWs().items=normalizeWorkspace({items:['Prize * 3','What now ?','Duplicate','Duplicate']}).items;renderAll();document.getElementById('bulkToggleBtn').click();document.getElementById('applyBulkBtn').click()`);
+  assert.equal(a.run('getActiveWs().items.map(i=>i.name).join("|")'),'Prize * 3|What now ?|Duplicate|Duplicate');
+  assert.equal(a.run('getActiveWs().weighted'),false);
+  assert.equal(a.run('new Set(getActiveWs().items.map(i=>i.id)).size'),4);
+});
