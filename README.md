@@ -44,7 +44,7 @@ With Node.js 18 or later:
 node --test tests/wheel.test.cjs
 ```
 
-The 22 regression checks cover random selection, matching wheel landings, races,
+The 23 regression checks cover random selection, matching wheel landings, races,
 saved-data migration, imports, undo, bulk editing, text contrast, label wrapping,
 and appearance preferences. Browser checks cover live scores and desktop/phone layouts.
 

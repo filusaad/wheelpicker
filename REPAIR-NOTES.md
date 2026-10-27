@@ -54,7 +54,7 @@ instead of HTML entities, allowing names to break rendered input attributes.
 ## Verification
 
 Run `node --test tests/wheel.test.cjs` (Node.js 18+). The suite executes the actual
-inline script in a deterministic DOM/canvas host. The 22 checks cover startup, escaping,
+inline script in a deterministic DOM/canvas host. The 23 checks cover startup, escaping,
 migration, storage failure, weighted pointer geometry, import validation, CSV and
 Unicode sharing, single-win scoring, race cancellation, a race to exactly seven,
 mystery reveal, undo, equal/weighted tickets, rejection sampling, matching animation

@@ -244,3 +244,12 @@ test('long wheel labels wrap at measured widths and truncate with an ellipsis in
   assert.equal(a.run('longLabel.at(-1).endsWith("…")'),true);
   assert.equal(a.run('longLabel.every(line=>line.length*9<=90)'),true);
 });
+test('six-choice labels retain two lines across phone, in-app and desktop wheel sizes',()=>{
+  const a=app();
+  for(const width of [300,320,335,360,387,410,440,480]) {
+    a.run(`globalThis.metrics=wheelLabelMetrics(${width}/2-24,${width},Math.PI/3)`);
+    assert.ok(a.run('metrics.maxLines')>=2,'Two lines at '+width+'px');
+    assert.ok(a.run('metrics.fontSize')>=13,'Readable font at '+width+'px');
+    assert.ok(a.run('metrics.lineHeight*2 <= metrics.availableHeight'),'Lines stay inside slice at '+width+'px');
+  }
+});

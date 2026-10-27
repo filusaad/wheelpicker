@@ -13,8 +13,9 @@
   points, settings, and subsequent light/dark selections.
 - Replaced new-wheel and rename browser prompts with an accessible in-page dialog
   that also works in the in-app browser.
-- All 22 regression checks pass, including label contrast, wrapping, and appearance
+- All 23 regression checks pass, including label contrast, wrapping, and appearance
   migration, in addition to the existing randomness and target race checks.
+- Six-choice labels retain two lines at phone, in-app, and desktop wheel sizes.
 
 ## 3.1.0 — 2026-10-27
 
