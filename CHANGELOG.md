@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.1 — 2026-10-27
+
+- Reworked dark mode with neutral charcoal surfaces, muted lavender controls,
+  softer borders, and clear off-white text instead of blue-tinted backgrounds.
+- Added a separate muted wheel palette for dark mode and coordinated the hub,
+  pointer, rim, score dots, and entry colors. Light mode retains its bright palette.
+- Verified default wheel-label contrast above 4.5:1 in both themes. All 23 checks pass.
+
 ## 3.3.0 — 2026-10-27
 
 - Removed the intro slogan, large promotional heading, supporting copy, decorative

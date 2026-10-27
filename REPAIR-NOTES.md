@@ -50,6 +50,8 @@ instead of HTML entities, allowing names to break rendered input attributes.
   new-wheel/rename dialogs. Saved choices and points survive the appearance update.
 - Release 3.3 removes promotional text and prioritizes the wheel above the fold,
   with compact race controls, visible scores, and optional editor settings.
+- Dark mode uses neutral charcoal surfaces and a coordinated muted wheel palette.
+  Default label contrast is checked in both light and dark themes.
 - Graceful operation if audio or browser storage is unavailable. Unreadable saved
   data is preserved under a recovery key before the application saves new state.
 

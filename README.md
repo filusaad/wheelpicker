@@ -20,6 +20,8 @@ winning entries stay revealed. Mystery mode does not change selection odds.
 
 The main screen opens directly on the wheel. Target race controls sit below it;
 secondary options are in the editor or Studio.
+The theme button switches between bright light mode and neutral charcoal dark
+mode. The wheel colors adapt to the theme while selection odds remain the same.
 
 Wheels save automatically in your browser. Studio includes JSON backup/restore
 and CSV import/export. Shared links contain the wheel's choices; they are not a

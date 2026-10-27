@@ -229,12 +229,15 @@ test('the brighter appearance migrates once without losing choices, points or la
   assert.equal(b.run('state.theme'),'dark');
   assert.equal(b.run('getActiveWs().items[0].wins'),6);
 });
-test('the default wheel text exceeds 4.5 to 1 contrast on every bright slice',()=>{
+test('the default wheel text exceeds 4.5 to 1 contrast in both light and dark themes',()=>{
   const a=app();
-  assert.equal(a.run(`PALETTES.cyber.every(color=>{
-    const a=colorLuminance(color),b=colorLuminance(wheelLabelColor(color));
-    return (Math.max(a,b)+.05)/(Math.min(a,b)+.05) >= 4.5;
-  })`),true);
+  for(const theme of ['light','dark']) {
+    a.run(`state.theme=${JSON.stringify(theme)}`);
+    assert.equal(a.run(`getPalette('cyber').every(color=>{
+      const a=colorLuminance(color),b=colorLuminance(wheelLabelColor(color));
+      return (Math.max(a,b)+.05)/(Math.min(a,b)+.05) >= 4.5;
+    })`),true,theme+' label contrast');
+  }
 });
 test('long wheel labels wrap at measured widths and truncate with an ellipsis instead of compressing',()=>{
   const a=app();
