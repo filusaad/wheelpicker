@@ -12,7 +12,7 @@ function app(saved = {}, options = {}) {
   let now = 0, next = 1;
   const timers = new Map(), frames = new Map(), elements = new Map();
   const gradient = {addColorStop(){}};
-  const context = new Proxy({}, {get:(_, key)=>key === 'createRadialGradient' ? ()=>gradient : ()=>{}});
+  const context = new Proxy({}, {get:(_, key)=>key === 'createRadialGradient' ? ()=>gradient : key === 'measureText' ? text=>({width:Array.from(String(text)).length*9}) : ()=>{}});
   function element(id='') {
     const classes = new Set();
     return {id,tagName:'DIV',value:'',textContent:'',innerHTML:'',dataset:{},style:{},children:[],disabled:false,isConnected:true,attributes:{},listeners:{},
@@ -218,4 +218,29 @@ test('unchanged bulk lines preserve names containing the optional suffix syntax'
   assert.equal(a.run('getActiveWs().items.map(i=>i.name).join("|")'),'Prize * 3|What now ?|Duplicate|Duplicate');
   assert.equal(a.run('getActiveWs().weighted'),false);
   assert.equal(a.run('new Set(getActiveWs().items.map(i=>i.id)).size'),4);
+});
+test('the brighter appearance migrates once without losing choices, points or later theme preferences',()=>{
+  const a=app({picker_studio_pro_v3_state:JSON.stringify({theme:'dark',workspaces:[{id:'old',items:[{name:'Saved choice',wins:6}]}]})});
+  assert.equal(a.run('state.theme'),'light');
+  assert.equal(a.run('getActiveWs().items[0].wins'),6);
+  assert.equal(a.run('getActiveWs().items[0].name'),'Saved choice');
+  a.run(`document.getElementById('themeBtn').click()`);
+  const b=app(Object.fromEntries(a.storage));
+  assert.equal(b.run('state.theme'),'dark');
+  assert.equal(b.run('getActiveWs().items[0].wins'),6);
+});
+test('the default wheel text exceeds 4.5 to 1 contrast on every bright slice',()=>{
+  const a=app();
+  assert.equal(a.run(`PALETTES.cyber.every(color=>{
+    const a=colorLuminance(color),b=colorLuminance(wheelLabelColor(color));
+    return (Math.max(a,b)+.05)/(Math.min(a,b)+.05) >= 4.5;
+  })`),true);
+});
+test('long wheel labels wrap at measured widths and truncate with an ellipsis instead of compressing',()=>{
+  const a=app();
+  a.run(`globalThis.wrapped=wrapWheelLabel('Deep Work Sprint',90,2);globalThis.longLabel=wrapWheelLabel('Supercalifragilisticexpialidocious another long choice',90,2)`);
+  assert.equal(a.run('wrapped.join("|")'),'Deep Work|Sprint');
+  assert.equal(a.run('longLabel.length'),2);
+  assert.equal(a.run('longLabel.at(-1).endsWith("…")'),true);
+  assert.equal(a.run('longLabel.every(line=>line.length*9<=90)'),true);
 });

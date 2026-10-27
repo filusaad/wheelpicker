@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.2.0 — 2026-10-27
+
+- Replaced the dim charcoal/olive appearance with a bright white and blue studio,
+  colorful wheel slices, lighter borders, and larger controls and text.
+- Removed the dark wheel vignette and text shadows. Labels now use a contrasting
+  ink color, stay upright on both halves, and wrap onto multiple lines rather than
+  being squeezed horizontally.
+- Increased the wheel's available size and made score names wrap without colliding
+  with the point totals.
+- Adopted the bright theme once for existing users while preserving saved choices,
+  points, settings, and subsequent light/dark selections.
+- Replaced new-wheel and rename browser prompts with an accessible in-page dialog
+  that also works in the in-app browser.
+- All 22 regression checks pass, including label contrast, wrapping, and appearance
+  migration, in addition to the existing randomness and target race checks.
+
 ## 3.1.0 — 2026-10-27
 
 ### Fixed

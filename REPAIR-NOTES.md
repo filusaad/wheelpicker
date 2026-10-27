@@ -45,13 +45,16 @@ instead of HTML entities, allowing names to break rendered input attributes.
   equal-chance mode, duplicate entries, and literal names ending in `* 3` or `?`.
 - Responsive light/dark layouts, labelled controls, keyboard tabs, dialog focus
   management, and support for reduced-motion preferences.
+- Release 3.2 adds a bright white/blue default appearance, colorful flat slices,
+  larger upright labels with measured wrapping and contrasting text, and in-page
+  new-wheel/rename dialogs. Saved choices and points survive the appearance update.
 - Graceful operation if audio or browser storage is unavailable. Unreadable saved
   data is preserved under a recovery key before the application saves new state.
 
 ## Verification
 
 Run `node --test tests/wheel.test.cjs` (Node.js 18+). The suite executes the actual
-inline script in a deterministic DOM/canvas host. The 19 checks cover startup, escaping,
+inline script in a deterministic DOM/canvas host. The 22 checks cover startup, escaping,
 migration, storage failure, weighted pointer geometry, import validation, CSV and
 Unicode sharing, single-win scoring, race cancellation, a race to exactly seven,
 mystery reveal, undo, equal/weighted tickets, rejection sampling, matching animation
@@ -59,6 +62,6 @@ landings, bulk draft isolation, literal names, and reduced motion. Browser check
 and desktop/phone layouts.
 
 The original supplied Gemini file remains untouched in the local workspace. The
-old local `index.html` was preserved as `index.original.html`. Release 3.1.0 is
-prepared through pull request #1 for publication from `main` at
+old local `index.html` was preserved as `index.original.html`. Release 3.1.0 was
+published through pull request #1; subsequent updates are published from `main` at
 https://filusaad.github.io/wheelpicker/. See `CHANGELOG.md` for the update summary.

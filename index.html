@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Picker Studio — A little spin. A clear decision.</title>
   <meta name="description" content="Your personal decision wheel. Add weighted choices, reveal mystery picks, and race to a winner. Free, private, and saved on your device." />
-  <meta name="theme-color" content="#101212" />
+  <meta name="theme-color" content="#f5f7ff" />
   <link rel="icon" type="image/png" href="./favicon.png?v=3.1" />
   <link rel="apple-touch-icon" href="./favicon.png?v=3.1" />
   <style>
@@ -1073,7 +1073,8 @@
     .score-row.paused {opacity:.65}
     .score-row .lb-top {align-items:center; gap:8px}
     .score-entry-name {display:flex; align-items:center; gap:7px; min-width:0; font-size:12px; font-weight:500; overflow-wrap:anywhere}
-    .score-entry-name .score-name {min-width:0;white-space:normal}
+    .score-row .score-entry-name .score-name {min-width:0;white-space:normal}
+    .score-row .lb-top {display:grid;grid-template-columns:minmax(0,1fr) auto}
     .score-entry-name .color-dot {flex-shrink:0}
     .score-value {font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; line-height:1.1; text-align:right}
     .score-value small {font-size:9px; font-weight:500; color:var(--text-muted); letter-spacing:0}
@@ -1082,6 +1083,91 @@
     @media(min-width:1101px) and (max-width:1280px) {.wheel-race-view{grid-template-columns:minmax(0,1fr) 170px;gap:10px}.live-scoreboard{padding:10px}.score-value{font-size:19px}.score-entry-name{font-size:11px}.scoreboard-header h3{font-size:13px}}
     @media(max-width:1100px){main{grid-template-columns:minmax(0,1fr)}.wheel-stage{min-height:0}.control-panel{height:640px}}
     @media(max-width:620px){.wheel-race-view{grid-template-columns:minmax(0,1fr);gap:6px}.live-scoreboard{order:-1;width:100%;margin-top:0;padding:12px}#leaderboardList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:178px;gap:7px}.score-row{padding:9px}.score-value{font-size:19px}.score-entry-name{font-size:11px}.scoreboard-caption{margin-bottom:8px}.scoreboard-footnote{margin-top:8px;padding-top:7px;font-size:9px}}
+    /* Bright studio: clear type, colorful flat slices, and lighter surfaces. */
+    :root {
+      --bg-base:#17243c;--bg-surface:#24334e;--bg-elevated:#2c3e5b;--bg-card:#354968;--bg-glass:rgba(23,36,60,.96);
+      --text-main:#f6f9ff;--text-muted:#c0cde2;--text-dim:#b1c1db;--border:rgba(207,222,248,.16);--border-strong:rgba(207,222,248,.28);
+      --accent:#a9bcff;--accent-hover:#c0ceff;--border-focus:#a9bcff;--accent-glow:rgba(134,165,255,.15);--mystery:#ba96ee;
+      --shadow-lg:0 12px 36px rgba(8,22,50,.12);
+    }
+    [data-theme="light"] {
+      --bg-base:#f5f7ff;--bg-surface:#fff;--bg-elevated:#f0f4fc;--bg-card:#e8eefb;--bg-glass:rgba(255,255,255,.97);
+      --text-main:#1b2b4a;--text-muted:#546780;--text-dim:#657894;--border:#dfe7f4;--border-strong:#c9d6ed;
+      --accent:#4f63e6;--accent-hover:#3f50c9;--border-focus:#4f63e6;--accent-glow:rgba(79,99,230,.10);--mystery:#8654cb;
+      --shadow-lg:0 10px 30px rgba(46,76,140,.065);
+    }
+    body {font-size:14px;background-image:radial-gradient(ellipse at 0 10%,rgba(166,189,255,.13),transparent 45%),radial-gradient(ellipse at 100% 50%,rgba(128,224,213,.10),transparent 40%)}
+    header {background:var(--bg-surface);padding-top:16px;padding-bottom:16px}
+    .brand-logo {background:#4f63e6;color:#fff}
+    .brand-title {font-size:20px}
+    .brand-badge {font-size:9px;letter-spacing:1.9px}
+    .ws-tab {font-size:13px;padding:9px 14px}
+    .ws-tab,.ws-add-btn {flex-shrink:0;white-space:nowrap}
+    .ws-tab.active {background:var(--accent-glow);color:var(--accent);border-color:var(--border)}
+    .icon-btn {font-size:13px;font-weight:550;padding:9px 12px;background:var(--bg-surface)}
+    .page-intro {margin-top:28px;margin-bottom:24px}
+    .eyebrow {font-size:11px;letter-spacing:1.7px}
+    .page-intro p {font-size:15px}
+    .save-status {font-size:12px}
+    .wheel-stage {background-image:radial-gradient(ellipse at 45% 45%,rgba(163,187,255,.08),transparent 65%);min-height:850px;padding:22px}
+    .control-panel {height:850px;box-shadow:var(--shadow-lg)}
+    .stage-top-bar {flex-wrap:wrap}
+    .status-pill {font-size:11px;padding:6px 10px;background:var(--bg-elevated)}
+    #stageSoundProfileBtn,#stageAutoRemoveBtn {font-size:12px;padding:6px 9px;border-color:var(--border)}
+    .race-controls {background:var(--bg-surface);border-color:var(--border-strong);padding:16px;margin-top:18px;box-shadow:0 3px 12px rgba(70,100,180,.03)}
+    .race-label {font-size:10px;letter-spacing:1.4px}
+    .race-goal {font-size:14px}
+    #raceTargetInput {font-size:16px;padding:5px 7px;background:var(--bg-elevated)}
+    .race-summary {font-size:12px}
+    .primary-btn,#autoRaceBtn {background:#4f63e6;color:#fff;font-size:14px}
+    .primary-btn:hover:not(:disabled),#autoRaceBtn:hover:not(:disabled){background:#3f50c9}
+    #autoRaceBtn {padding:11px 17px}
+    .wheel-heading {margin-top:20px}
+    .wheel-heading h2 {font-size:24px;font-weight:700}
+    .wheel-heading>span {font-size:10px;letter-spacing:1.5px}
+    .canvas-container {width:min(100%,480px);margin-top:12px}
+    canvas#wheelCanvas {filter:drop-shadow(0 6px 14px rgba(80,104,161,.11))}
+    .hub-btn {width:84px;height:84px;background:#fff;color:#3248b8;border:7px solid #fff;box-shadow:0 3px 15px rgba(46,72,137,.20);font-size:15px}
+    .hub-btn small {font-size:9px}
+    .live-callout {font-size:14px;background:var(--bg-elevated);border-color:var(--border);padding:9px 14px;line-height:1.45}
+    #mainSpinBtn {font-size:15px;padding:13px 28px;min-width:190px}
+    .panel-tab {font-size:14px;padding:18px 0 15px}
+    .editor-heading h2 {font-size:21px}
+    .editor-heading p {font-size:13px}
+    .chance-row {font-size:13px;padding:12px}
+    .chance-row .select-input {font-size:12px}
+    #chanceModeHint {font-size:12px}
+    .template-row {font-size:12px}
+    .template-row .select-input {font-size:12px;max-width:175px}
+    .text-input,.add-item-row .primary-btn {font-size:14px}
+    .mini-btn {font-size:11px;padding:7px 9px}
+    .item-row {padding:11px 10px;border-color:var(--border);background:var(--bg-elevated)}
+    .item-name-input {font-size:14px;font-weight:550}
+    .odds-badge {font-size:11px}
+    .row-action-btn {font-size:14px;width:27px;height:30px}
+    .entry-note {font-size:11px}
+    .live-scoreboard {background:var(--bg-elevated);border-color:var(--border);padding:14px;box-shadow:none}
+    .scoreboard-header h3 {font-size:17px}
+    .scoreboard-caption,.scoreboard-footnote {font-size:11px}
+    #leaderboardList {max-height:470px}
+    .score-row {background:var(--bg-surface);padding:11px}
+    .score-entry-name {font-size:13px;font-weight:600}
+    .score-value {font-size:26px}
+    .score-value small {font-size:11px}
+    .color-dot {width:10px;height:10px}
+    .setting-sub {font-size:12px}
+    .setting-row {font-size:14px}
+    footer {font-size:11px}
+    @media(max-width:1100px){.wheel-stage{min-height:0}.control-panel{height:760px}}
+    @media(max-width:620px){.wheel-stage{padding:15px 12px 22px}.live-scoreboard{padding:12px}#leaderboardList{max-height:178px}.score-entry-name{font-size:12px}.score-value{font-size:23px}.scoreboard-header h3{font-size:16px}.canvas-container{width:min(100%,400px)}.control-panel{height:760px}}
+    @media(max-width:540px){header{padding:14px 16px}.brand-title{font-size:17px}.header-actions .icon-btn{font-size:11px;padding:7px}.page-intro p{font-size:13px}.page-intro{margin-top:22px}.race-controls{padding:12px}.race-goal{font-size:12px}#raceTargetInput{font-size:15px;width:52px}#autoRaceBtn{font-size:12px;padding:10px 12px}.race-summary{font-size:11px}.race-label{font-size:9px}#stageSoundProfileBtn,#stageAutoRemoveBtn{font-size:11px}.status-pill{font-size:10px}.hub-btn{width:72px;height:72px;border-width:6px;font-size:14px}.wheel-heading h2{font-size:22px}.wheel-heading>span{font-size:9px}.live-callout{font-size:12px}.editor-heading h2{font-size:19px}.editor-heading p{font-size:12px}.item-name-input{font-size:13px}.odds-badge{font-size:10px}.template-row .select-input{font-size:11px;max-width:165px}.row-action-btn{width:25px}.chance-row{font-size:12px}#chanceModeHint{font-size:11px}.entry-note{font-size:10px}.mini-btn{font-size:10px}.text-input{font-size:13px}}
+    .name-dialog {background:var(--bg-surface);color:var(--text-main);border:1px solid var(--border);border-radius:18px;padding:26px;max-width:420px;width:calc(100% - 32px);margin:auto;box-shadow:0 20px 70px rgba(36,58,108,.20)}
+    .name-dialog::backdrop {background:rgba(28,45,80,.28);backdrop-filter:blur(3px)}
+    .name-dialog h2 {font-size:23px;letter-spacing:-.5px;margin-bottom:8px}
+    .name-dialog p {font-size:13px;color:var(--text-muted);margin-bottom:22px}
+    .name-dialog label {display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+    .name-dialog .text-input {display:block;width:100%;font-size:15px}
+    .name-dialog-actions {display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
     @media(prefers-reduced-motion:reduce) {*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -1288,7 +1374,7 @@ Item 3 * 5"></textarea>
               <span class="setting-sub">Slice color harmony</span>
             </div>
             <select class="select-input" id="paletteSelect">
-              <option value="cyber">Studio Botanical</option>
+              <option value="cyber">Studio Pop</option>
               <option value="studio">Studio Vibrant</option>
               <option value="ember">Sunset Ember</option>
               <option value="emerald">Emerald Forest</option>
@@ -1373,6 +1459,15 @@ Item 3 * 5"></textarea>
     <div>Made for the undecided. <span class="footer-note">No account. No tracking. Just a fair spin.</span></div>
   </footer>
 
+  <dialog id="workspaceNameDialog" class="name-dialog" aria-labelledby="workspaceDialogTitle">
+    <form id="workspaceNameForm">
+      <h2 id="workspaceDialogTitle">New wheel</h2>
+      <p>Give this wheel a name that makes it yours.</p>
+      <label for="workspaceNameInput">Wheel name</label>
+      <input id="workspaceNameInput" class="text-input" maxlength="100" required autocomplete="off" />
+      <div class="name-dialog-actions"><button type="button" class="icon-btn" id="workspaceNameCancelBtn">Cancel</button><button class="primary-btn" id="workspaceNameSaveBtn" type="submit">Create wheel</button></div>
+    </form>
+  </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
     /**************************************************************
@@ -1381,7 +1476,7 @@ Item 3 * 5"></textarea>
     const STORAGE_KEY = 'picker_studio_pro_v3_state';
 
     const PALETTES = {
-      cyber:   ['#82b5a2','#d4b57a','#929cc5','#c58d90','#91ad72','#ab91bd','#75a8b5','#c4a482'],
+      cyber:   ['#ff9985','#ffda75','#74dccc','#91c8ff','#b6a4ff','#ffa8ce','#b9df83','#ffba7f'],
       studio:  ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'],
       ember:   ['#fb7185', '#f43f5e', '#e11d48', '#f97316', '#fb923c', '#facc15', '#a855f7', '#ec4899'],
       emerald: ['#059669', '#10b981', '#34d399', '#0d9488', '#14b8a6', '#0284c7', '#65a30d', '#84cc16'],
@@ -1416,7 +1511,8 @@ Item 3 * 5"></textarea>
     });
 
     let state = {
-      theme: 'dark',
+      theme: 'light',
+      appearanceVersion: 2,
       muted: false,
       volume: 0.8,
       soundProfile: 'mechanical',
@@ -1441,6 +1537,7 @@ Item 3 * 5"></textarea>
     const undoStack = [];
     const bulkDrafts = new Map();
     let bulkWorkspaceId = null;
+    let namingWorkspaceId = null;
     const makeId = () => window.crypto.randomUUID ? window.crypto.randomUUID() : 'id_' + Date.now() + '_' + cryptoRandom().toString(36).slice(2);
     const clamp = (value, min, max, fallback) => Number.isFinite(Number(value)) ? Math.min(max, Math.max(min, Number(value))) : fallback;
     const safeColor = value => /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(value) ? value : '#82b5a2';
@@ -1480,7 +1577,7 @@ Item 3 * 5"></textarea>
       if (!source || !Array.isArray(source.workspaces) || !source.workspaces.length) throw new Error('No wheels found in this backup.');
       const workspaces = source.workspaces.map(normalizeWorkspace);
       const activeIndex = Math.max(0,source.workspaces.findIndex(w => w.id === source.activeWorkspaceId));
-      return {theme:source.theme === 'light' ? 'light' : 'dark', muted:source.muted === true, volume:clamp(source.volume ?? .8,0,1,.8), soundProfile:SOUND_PROFILES.includes(source.soundProfile) ? source.soundProfile : 'mechanical', workspaces, activeWorkspaceId:workspaces[Math.min(activeIndex,workspaces.length-1)].id};
+      return {theme:source.theme === 'dark' ? 'dark' : 'light', appearanceVersion:Number(source.appearanceVersion) || 0, muted:source.muted === true, volume:clamp(source.volume ?? .8,0,1,.8), soundProfile:SOUND_PROFILES.includes(source.soundProfile) ? source.soundProfile : 'mechanical', workspaces, activeWorkspaceId:workspaces[Math.min(activeIndex,workspaces.length-1)].id};
     }
 
     /**************************************************************
@@ -1633,6 +1730,8 @@ Item 3 * 5"></textarea>
           notify('Shared wheel added to your studio.');
         } catch { notify('This wheel link could not be opened. Check that the complete link was copied.'); }
       }
+      // Adopt the brighter redesign once. Later explicit light/dark choices persist.
+      if (state.appearanceVersion < 2) { state.theme = 'light'; state.appearanceVersion = 2; }
       document.documentElement.setAttribute('data-theme',state.theme);
     }
 
@@ -1735,6 +1834,42 @@ Item 3 * 5"></textarea>
       return slices[slices.length - 1];
     }
 
+    function colorLuminance(color) {
+      let hex = color.replace('#','');
+      if (hex.length === 3) hex = Array.from(hex,c=>c+c).join('');
+      const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c <= .04045 ? c/12.92 : ((c+.055)/1.055)**2.4);
+      return rgb[0]*.2126 + rgb[1]*.7152 + rgb[2]*.0722;
+    }
+    function wheelLabelColor(color) {
+      const luminance = colorLuminance(color);
+      const ink = colorLuminance('#13213a');
+      const inkContrast = (luminance+.05)/(ink+.05);
+      const whiteContrast = 1.05/(luminance+.05);
+      return inkContrast >= whiteContrast ? '#13213a' : '#ffffff';
+    }
+    function wrapWheelLabel(text, maxWidth, maxLines) {
+      let remaining = String(text).trim();
+      const lines = [];
+      for (let row=0; row<maxLines && remaining; row++) {
+        if (ctx.measureText(remaining).width <= maxWidth) { lines.push(remaining); break; }
+        const chars = Array.from(remaining);
+        let length = 0;
+        while (length < chars.length && ctx.measureText(chars.slice(0,length+1).join('')).width <= maxWidth) length++;
+        if (!length) break;
+        if (row === maxLines-1) {
+          while (length > 0 && ctx.measureText(chars.slice(0,length).join('')+'…').width > maxWidth) length--;
+          if (length) lines.push(chars.slice(0,length).join('').trimEnd()+'…');
+          break;
+        }
+        const candidate = chars.slice(0,length).join('');
+        const wordEnd = candidate.lastIndexOf(' ');
+        if (wordEnd > 0) length = Array.from(candidate.slice(0,wordEnd)).length;
+        lines.push(chars.slice(0,length).join('').trimEnd());
+        remaining = chars.slice(length).join('').trimStart();
+      }
+      return lines;
+    }
+
     function drawWheel() {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -1759,10 +1894,10 @@ Item 3 * 5"></textarea>
       // Outer Casino Bezel Ring
       ctx.beginPath();
       ctx.arc(cx, cy, radius + 14, 0, Math.PI * 2);
-      ctx.fillStyle = state.theme === 'dark' ? '#303930' : '#d4d9c9';
+      ctx.fillStyle = state.theme === 'dark' ? '#536782' : '#ffffff';
       ctx.fill();
       ctx.lineWidth = 3;
-      ctx.strokeStyle = ws.mysteryMode ? 'rgba(236, 72, 153, 0.45)' : 'rgba(255, 255, 255, 0.16)';
+      ctx.strokeStyle = ws.mysteryMode ? '#c2a3ef' : '#d3def2';
       ctx.stroke();
 
       // 24 Casino Chasing Rim LEDs
@@ -1779,11 +1914,10 @@ Item 3 * 5"></textarea>
           ctx.beginPath();
           ctx.arc(lx, ly, 2.8, 0, Math.PI * 2);
           if (isLit) {
-            ctx.fillStyle = ws.mysteryMode ? '#d4acf1' : '#e7efb2';
-            ctx.shadowColor = ws.mysteryMode ? '#d4acf1' : '#c3f279';
-            ctx.shadowBlur = 8;
+            ctx.fillStyle = ws.mysteryMode ? '#ad7cde' : '#8eacf0';
+            ctx.shadowBlur = 0;
           } else {
-            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.fillStyle = state.theme === 'dark' ? '#8495ae' : '#e2e9f7';
             ctx.shadowBlur = 0;
           }
           ctx.fill();
@@ -1796,9 +1930,9 @@ Item 3 * 5"></textarea>
       if (slices.length === 0) {
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#1e293b';
+        ctx.fillStyle = state.theme === 'dark' ? '#2c3e5b' : '#edf2fc';
         ctx.fill();
-        ctx.fillStyle = '#f8fafc';
+        ctx.fillStyle = state.theme === 'dark' ? '#f6f9ff' : '#1b2b4a';
         ctx.font = '600 16px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -1826,33 +1960,40 @@ Item 3 * 5"></textarea>
         if (isLastWinner) {
           ctx.save();
           ctx.lineWidth = 4.5;
-          ctx.strokeStyle = '#fde047';
-          ctx.shadowColor = '#facc15';
-          ctx.shadowBlur = 16;
+          ctx.strokeStyle = '#4f63e6';
+          ctx.shadowBlur = 0;
           ctx.stroke();
           ctx.restore();
         } else {
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = 'rgba(15, 23, 42, 0.38)';
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#ffffff';
           ctx.stroke();
         }
 
-        // Slice Label (or Mystery Mask)
+        // Keep labels upright on both halves, wrap at natural word boundaries,
+        // and never use fillText's maxWidth argument to squeeze the glyphs.
         ctx.save();
         ctx.translate(cx, cy);
-        ctx.rotate(mid);
-        ctx.textAlign = 'right';
+        const normalizedMid = ((mid % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+        const flipped = normalizedMid > Math.PI/2 && normalizedMid < Math.PI*1.5;
+        ctx.rotate(mid + (flipped ? Math.PI : 0));
+        ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = 'rgba(0,0,0,0.6)';
-        ctx.shadowBlur = 4;
-
-        const displayStr = s.masked ? '??? MYSTERY' : s.item.name;
-        const maxTextLen = 20;
-        const label = displayStr.length > maxTextLen ? displayStr.slice(0, maxTextLen - 1) + '…' : displayStr;
-        const fontSize = Math.max(10, Math.min(16, Math.floor(s.arc * radius * 0.22)));
-        ctx.font = `800 ${fontSize}px Inter, sans-serif`;
-        if (s.arc * radius > 13) ctx.fillText(label, radius - 22, 0, Math.max(20,radius - 78));
+        ctx.fillStyle = wheelLabelColor(s.color);
+        ctx.shadowBlur = 0;
+        const hubRadius = width < 420 ? 36 : 43;
+        const labelRadius = (radius + hubRadius)/2;
+        const maxWidth = Math.max(20,radius-hubRadius-18);
+        const innerEdge = labelRadius-maxWidth/2;
+        const availableHeight = 2*innerEdge*Math.tan(Math.min(s.arc/2,Math.PI/3))*.82;
+        const fontSize = Math.max(12,Math.min(20,Math.round(radius*.105),Math.floor(availableHeight/1.2)));
+        const lineHeight = fontSize*1.22;
+        const maxLines = Math.max(1,Math.min(3,Math.floor(availableHeight/lineHeight)));
+        ctx.font = `700 ${fontSize}px system-ui, -apple-system, Segoe UI, sans-serif`;
+        if (availableHeight >= fontSize*.9) {
+          const lines = wrapWheelLabel(s.masked ? 'Mystery ???' : s.item.name,maxWidth,maxLines);
+          lines.forEach((line,index)=>ctx.fillText(line,(flipped ? -1 : 1)*labelRadius,(index-(lines.length-1)/2)*lineHeight));
+        }
         ctx.restore();
 
         // Rim Peg at Slice Boundary
@@ -1863,19 +2004,9 @@ Item 3 * 5"></textarea>
         ctx.fillStyle = '#ffffff';
         ctx.fill();
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = '#0f172a';
+        ctx.strokeStyle = '#b4c4e2';
         ctx.stroke();
       });
-
-      // Radial Depth Vignette
-      const grad = ctx.createRadialGradient(cx, cy, radius * 0.16, cx, cy, radius);
-      grad.addColorStop(0, 'rgba(0,0,0,0.2)');
-      grad.addColorStop(0.84, 'rgba(0,0,0,0)');
-      grad.addColorStop(1, 'rgba(0,0,0,0.24)');
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
 
       // Draw Spring-Loaded Flapper Pointer (at 3 o'clock)
       ctx.save();
@@ -1887,9 +2018,9 @@ Item 3 * 5"></textarea>
       ctx.lineTo(9, -13);
       ctx.lineTo(9, 13);
       ctx.closePath();
-      ctx.fillStyle = '#e7efb2';
-      ctx.shadowColor = 'rgba(0,0,0,0.65)';
-      ctx.shadowBlur = 10;
+      ctx.fillStyle = '#4f63e6';
+      ctx.shadowColor = 'rgba(55,78,140,0.16)';
+      ctx.shadowBlur = 5;
       ctx.fill();
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#ffffff';
@@ -2289,17 +2420,7 @@ Item 3 * 5"></textarea>
       const addBtn = document.createElement('button');
       addBtn.className = 'ws-add-btn';
       addBtn.textContent = '+ New Wheel';
-      addBtn.onclick = () => {
-        if (isSpinning || isAutoRacing) return;
-        const name = prompt('Name for your new wheel workspace:', `Wheel ${state.workspaces.length + 1}`);
-        if (!name || !name.trim()) return;
-        const nw = createDefaultWorkspace(name.trim());
-        state.workspaces.push(nw);
-        state.activeWorkspaceId = nw.id;
-        lastWonItemId = null; currentAngle = 0; resetCallout();
-        saveState();
-        renderAll();
-      };
+      addBtn.onclick = () => openWorkspaceNameDialog(false);
       bar.appendChild(addBtn);
     }
 
@@ -2379,7 +2500,7 @@ Item 3 * 5"></textarea>
         const wins = Number(item.wins) || 0;
         const pct = Math.min(100, Math.round((wins / target) * 100));
         const color = palette[ws.items.indexOf(item) % palette.length];
-        const displayName = isSliceMasked(item) && wins === 0 ? '??? (Undiscovered Slice)' : item.name;
+        const displayName = isSliceMasked(item) && wins === 0 ? 'Mystery entry' : item.name;
 
         const card = document.createElement('div');
         card.className = `score-row ${item.id === lastWonItemId ? 'latest-winner' : ''} ${item.active ? '' : 'paused'}`;
@@ -2440,6 +2561,7 @@ Item 3 * 5"></textarea>
 
       document.getElementById('muteBtn').textContent = state.muted ? '🔇 Muted' : '🔊 Audio';
       document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙 Dark' : '☀ Light';
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content',state.theme === 'dark' ? '#17243c' : '#f5f7ff');
     }
 
     function renderAll() {
@@ -2869,16 +2991,33 @@ Item 3 * 5"></textarea>
 
 
         // Workspace Rename / Delete / Import / Export
-    document.getElementById('renameWsBtn').addEventListener('click', () => {
+    function openWorkspaceNameDialog(rename) {
       if (isSpinning || isAutoRacing) return;
-      rememberEdit();
-      const ws = getActiveWs();
-      const updated = prompt('Rename current wheel workspace:', ws.name);
-      if (updated && updated.trim()) {
-        ws.name = updated.trim();
-        saveState();
-        renderAll();
+      namingWorkspaceId = rename ? getActiveWs().id : null;
+      document.getElementById('workspaceDialogTitle').textContent = rename ? 'Rename wheel' : 'New wheel';
+      document.getElementById('workspaceNameSaveBtn').textContent = rename ? 'Save name' : 'Create wheel';
+      const input = document.getElementById('workspaceNameInput');
+      input.value = rename ? getActiveWs().name : '';
+      document.getElementById('workspaceNameDialog').showModal();
+      input.focus();
+    }
+    document.getElementById('renameWsBtn').addEventListener('click', () => openWorkspaceNameDialog(true));
+    document.getElementById('workspaceNameCancelBtn').addEventListener('click', () => document.getElementById('workspaceNameDialog').close());
+    document.getElementById('workspaceNameForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const name = document.getElementById('workspaceNameInput').value.trim();
+      if (!name || isSpinning || isAutoRacing) return;
+      if (namingWorkspaceId) {
+        const ws = state.workspaces.find(w=>w.id === namingWorkspaceId);
+        if (!ws) return;
+        rememberEdit(); ws.name = name;
+      } else {
+        const ws = createDefaultWorkspace(name);
+        state.workspaces.push(ws); state.activeWorkspaceId = ws.id;
+        lastWonItemId = null; currentAngle = 0; resetCallout();
       }
+      document.getElementById('workspaceNameDialog').close();
+      saveState(); renderAll();
     });
 
     document.getElementById('deleteWsBtn').addEventListener('click', () => {
@@ -2991,6 +3130,7 @@ Item 3 * 5"></textarea>
 
     // Global Keyboard Shortcuts
     window.addEventListener('keydown', e => {
+      if (document.getElementById('workspaceNameDialog').open) return;
       if (e.ctrlKey || e.metaKey) {
         if (e.key.toLowerCase()==='z' && !['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)) {e.preventDefault();document.getElementById('undoBtn').click();}
         return;

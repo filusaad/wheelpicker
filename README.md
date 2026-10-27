@@ -1,6 +1,7 @@
 # Picker Studio
 
-A single-file decision wheel with fair random selection and automatic races.
+A single-file decision wheel with fair random selection, automatic races, and a
+bright, readable interface.
 
 **[Open the live wheel](https://filusaad.github.io/wheelpicker/)**
 
@@ -43,9 +44,9 @@ With Node.js 18 or later:
 node --test tests/wheel.test.cjs
 ```
 
-The 19 regression checks cover random selection, matching wheel landings, races,
-saved-data migration, imports, undo, and bulk editing. Browser checks cover live
-scores and desktop/phone layouts.
+The 22 regression checks cover random selection, matching wheel landings, races,
+saved-data migration, imports, undo, bulk editing, text contrast, label wrapping,
+and appearance preferences. Browser checks cover live scores and desktop/phone layouts.
 
 See [CHANGELOG.md](CHANGELOG.md) for release changes and
 [REPAIR-NOTES.md](REPAIR-NOTES.md) for the original failure and its fixes.
